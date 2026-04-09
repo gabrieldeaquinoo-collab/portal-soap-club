@@ -12,14 +12,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f7f6;min-height:100vh;color:#1a2e2b}
 a{color:#0ea18e;text-decoration:none}
-
+ 
 /* ─── PALETA ───────────────────────────────────────────────── */
 :root{
   --verde:#0ea18e;--verde-esc:#0a7a6a;--rosa:#eb6680;--rosa-claro:#f5b7bc;
   --creme:#fbfbef;--azul-menta:#b3dcdc;--borda:#c8dedd;--zebra:#edf6f5;
   --txt:#1a2e2b;--txt-med:#4a6460;--bg:#f0f7f6;
 }
-
+ 
 /* ─── LOGIN ────────────────────────────────────────────────── */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .login-card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 4px 24px rgba(14,161,142,.12)}
@@ -27,15 +27,14 @@ a{color:#0ea18e;text-decoration:none}
 .login-logo h1{color:var(--verde);font-size:32px;font-weight:900;letter-spacing:-1px}
 .login-logo p{color:var(--txt-med);font-size:13px;margin-top:4px}
 .login-card label{display:block;font-size:11px;font-weight:700;color:var(--txt-med);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
-.login-card select,.login-card input[type=password]{
+.login-card input[type=text],.login-card input[type=password]{
   width:100%;padding:12px 14px;border:1.5px solid var(--borda);border-radius:10px;
-  font-size:15px;color:var(--txt);background:var(--creme);outline:none;margin-bottom:20px;
-  appearance:none;-webkit-appearance:none}
-.login-card select:focus,.login-card input:focus{border-color:var(--verde)}
+  font-size:15px;color:var(--txt);background:var(--creme);outline:none;margin-bottom:20px}
+.login-card input:focus{border-color:var(--verde)}
 .login-btn{width:100%;padding:14px;background:var(--verde);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s}
 .login-btn:hover{background:var(--verde-esc)}
 .login-err{color:var(--rosa);font-size:13px;text-align:center;margin-top:12px;display:none}
-
+ 
 /* ─── DASHBOARD LAYOUT ─────────────────────────────────────── */
 .app{display:none}
 .topbar{background:var(--verde);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -44,9 +43,9 @@ a{color:#0ea18e;text-decoration:none}
 .topbar .condo-name{font-size:13px;opacity:.85}
 .btn-logout{background:rgba(255,255,255,.15);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
 .btn-logout:hover{background:rgba(255,255,255,.25)}
-
+ 
 .container{max-width:1000px;margin:0 auto;padding:24px 20px}
-
+ 
 /* ─── MES SELECTOR ─────────────────────────────────────────── */
 .mes-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .mes-bar label{font-size:12px;font-weight:700;color:var(--txt-med);text-transform:uppercase;letter-spacing:.5px}
@@ -54,7 +53,7 @@ a{color:#0ea18e;text-decoration:none}
 .mes-bar select:focus{border-color:var(--verde)}
 .btn-pdf{background:var(--verde);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto;display:flex;align-items:center;gap:6px}
 .btn-pdf:hover{background:var(--verde-esc)}
-
+ 
 /* ─── KPI CARDS ────────────────────────────────────────────── */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
 .kpi{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(14,161,142,.08)}
@@ -62,13 +61,13 @@ a{color:#0ea18e;text-decoration:none}
 .kpi-value{font-size:28px;font-weight:800;color:var(--verde)}
 .kpi-value.rosa{color:var(--rosa)}
 .kpi-sub{font-size:12px;color:var(--txt-med);margin-top:4px}
-
+ 
 /* ─── CHART ────────────────────────────────────────────────── */
 .chart-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(14,161,142,.08);margin-bottom:24px}
 .chart-card h3{color:var(--verde);font-size:15px;font-weight:700;margin-bottom:16px}
 .chart-wrap{position:relative;width:100%;max-width:700px;margin:0 auto}
 .chart-wrap canvas{width:100%!important;height:auto!important}
-
+ 
 /* ─── TABLE ────────────────────────────────────────────────── */
 .table-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(14,161,142,.08);margin-bottom:24px}
 .table-card h3{color:var(--verde);font-size:15px;font-weight:700;margin-bottom:16px}
@@ -85,12 +84,12 @@ tbody td.sec{color:var(--rosa)}
 tbody td:nth-child(3),tbody td:nth-child(4){text-align:right}
 tbody td.desc{color:var(--rosa);font-weight:600}
 .table-footer{text-align:center;padding:16px;color:var(--txt-med);font-size:13px}
-
+ 
 /* ─── LOADING ──────────────────────────────────────────────── */
 .loading{text-align:center;padding:60px 20px;color:var(--txt-med)}
 .loading .spinner{width:40px;height:40px;border:4px solid var(--borda);border-top-color:var(--verde);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
+ 
 /* ─── RESPONSIVE ───────────────────────────────────────────── */
 @media(max-width:600px){
   .kpis{grid-template-columns:1fr 1fr}
@@ -103,7 +102,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
 </style>
 </head>
 <body>
-
+ 
 <!-- ═══════ LOGIN ═══════ -->
 <div class="login-wrap" id="loginScreen">
   <div class="login-card">
@@ -112,20 +111,14 @@ tbody td.desc{color:var(--rosa);font-weight:600}
       <p>Somos um clube, e também lavamos roupas</p>
     </div>
     <label>Condomínio</label>
-    <select id="loginCondo">
-      <option value="">Selecione seu condomínio</option>
-      <option value="NEXT SKY">NEXT SKY</option>
-      <option value="KZ PANAMBY">KZ PANAMBY</option>
-      <option value="PAIQUERÊ">PAIQUERÊ</option>
-      <option value="PORTAL VILA PRUDENTE">PORTAL VILA PRUDENTE</option>
-    </select>
+    <input type="text" id="loginCondo" placeholder="Digite o nome do seu condomínio" autocomplete="off">
     <label>Senha</label>
     <input type="password" id="loginSenha" placeholder="Digite sua senha">
     <button class="login-btn" onclick="doLogin()">Entrar</button>
     <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
   </div>
 </div>
-
+ 
 <!-- ═══════ APP ═══════ -->
 <div class="app" id="app">
   <div class="topbar">
@@ -135,7 +128,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
   </div>
-
+ 
   <div class="container">
     <!-- Seletor de mês + botão PDF -->
     <div class="mes-bar">
@@ -146,13 +139,13 @@ tbody td.desc{color:var(--rosa);font-weight:600}
         Baixar PDF
       </button>
     </div>
-
+ 
     <!-- Loading -->
     <div class="loading" id="loading" style="display:none">
       <div class="spinner"></div>
       <div>Carregando dados...</div>
     </div>
-
+ 
     <!-- Dashboard content -->
     <div id="dashContent" style="display:none">
       <!-- KPIs -->
@@ -176,7 +169,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <div class="kpi-value" id="kpiSec">—</div>
         </div>
       </div>
-
+ 
       <!-- Gráfico -->
       <div class="chart-card">
         <h3>Tendência de Ciclos — Últimos 6 Meses</h3>
@@ -184,7 +177,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <canvas id="chartCanvas" width="700" height="280"></canvas>
         </div>
       </div>
-
+ 
       <!-- Resumo de Repasse -->
       <div class="table-card">
         <h3>Resumo de Repasse</h3>
@@ -194,7 +187,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <tfoot id="resumoFoot"></tfoot>
         </table>
       </div>
-
+ 
       <!-- Transações -->
       <div class="table-card">
         <h3>Detalhamento de Transações</h3>
@@ -213,21 +206,22 @@ tbody td.desc{color:var(--rosa);font-weight:600}
     </div>
   </div>
 </div>
-
+ 
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIGURAÇÃO
 // ════════════════════════════════════════════════════════════════
-const API_BASE = 'https://apps.vmhub.vmtecnologia.io/vmlav/api/externa/v1';
+const API_RAW  = 'https://apps.vmhub.vmtecnologia.io/vmlav/api/externa/v1';
 const API_KEY  = 'e2ba5e3f-143d-4e64-b3a5-bbc25592784e';
-
+function proxyUrl(url) { return 'https://corsproxy.io/?' + encodeURIComponent(url); }
+ 
 const CONDOMINIOS = {
   'NEXT SKY':             { id: 2610, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'NEXT_SKY',             senha: 'nextsky2026' },
   'KZ PANAMBY':           { id: 2611, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'KZ_PANAMBY',           senha: 'kzpanamby2026' },
   'PAIQUERÊ':             { id: 2533, repasse: { Lavagem: 1.00, Secagem: 1.00 }, slug: 'PAIQUERE',             senha: 'paiquere2026' },
   'PORTAL VILA PRUDENTE': { id: 2371, repasse: { Lavagem: 3.00, Secagem: 2.00 }, slug: 'PORTAL_VILA_PRUDENTE', senha: 'portalvp2026' },
 };
-
+ 
 // ════════════════════════════════════════════════════════════════
 // ESTADO
 // ════════════════════════════════════════════════════════════════
@@ -237,60 +231,70 @@ let currentTxs   = [];
 let currentMes   = null;
 let chartInstance = null;
 let historicoCache = {}; // { "2026-03": { lavCnt, secCnt, total, txs } }
-
+ 
 // ════════════════════════════════════════════════════════════════
 // HELPERS
 // ════════════════════════════════════════════════════════════════
 const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 const pad = n => String(n).padStart(2, '0');
-const NOMES_MES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const NOMES_MES       = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const NOMES_MES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-
+ 
 function mesLabel(ano, mes) { return `${NOMES_MES_CURTO[mes-1]}/${String(ano).slice(2)}`; }
-
+ 
 function calcVencimento(ano, mes) {
-  // Dia 5 do 2º mês seguinte
-  const d = new Date(ano, mes + 1, 5); // Date.month é 0-based, então mes+1 = +2 meses
+  const d = new Date(ano, mes + 1, 5);
   return `05/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
 }
-
+ 
+function normalize(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); }
+ 
 // ════════════════════════════════════════════════════════════════
 // LOGIN
 // ════════════════════════════════════════════════════════════════
 function doLogin() {
-  const nome  = document.getElementById('loginCondo').value;
+  const raw   = document.getElementById('loginCondo').value.trim();
   const senha = document.getElementById('loginSenha').value.trim().toLowerCase();
   const err   = document.getElementById('loginErr');
-
-  if (!nome) { err.textContent = 'Selecione um condomínio.'; err.style.display = 'block'; return; }
-
+ 
+  if (!raw) { err.textContent = 'Digite o nome do condomínio.'; err.style.display = 'block'; return; }
+ 
+  const inputNorm = normalize(raw);
+  const nome = Object.keys(CONDOMINIOS).find(k => normalize(k) === inputNorm);
+ 
+  if (!nome) { err.textContent = 'Condomínio não encontrado. Verifique o nome.'; err.style.display = 'block'; return; }
+ 
   const cfg = CONDOMINIOS[nome];
   if (senha !== cfg.senha) { err.textContent = 'Senha incorreta. Tente novamente.'; err.style.display = 'block'; return; }
-
+ 
   err.style.display = 'none';
   currentCondo = nome;
   currentCfg   = cfg;
   historicoCache = {};
-
+ 
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('topCondoName').textContent = nome;
-
   populateMeses();
   carregarMes();
 }
-
+ 
 // Enter to login
 document.getElementById('loginSenha').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
+document.getElementById('loginCondo').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+ 
 function doLogout() {
-  currentCondo = null; currentCfg = null; currentTxs = []; historicoCache = {};
+  currentCondo = null;
+  currentCfg   = null;
+  currentTxs   = [];
+  historicoCache = {};
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginSenha').value = '';
   document.getElementById('loginCondo').value = '';
+  document.getElementById('loginErr').style.display = 'none';
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 // MES SELECTOR
 // ════════════════════════════════════════════════════════════════
@@ -298,27 +302,27 @@ function populateMeses() {
   const sel = document.getElementById('mesSel');
   sel.innerHTML = '';
   const now = new Date();
-  // Últimos 12 meses
   for (let i = 0; i < 12; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const val = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+    const val   = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
     const label = `${NOMES_MES[d.getMonth()]} ${d.getFullYear()}`;
-    const opt = document.createElement('option');
-    opt.value = val; opt.textContent = label;
+    const opt   = document.createElement('option');
+    opt.value       = val;
+    opt.textContent = label;
     sel.appendChild(opt);
   }
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 // API
 // ════════════════════════════════════════════════════════════════
 async function buscarVendas(idLavanderia, dataInicio, dataTermino) {
   let todas = [], pagina = 0;
   while (true) {
-    const url = `${API_BASE}/vendas?idLavanderia=${idLavanderia}`
+    const rawUrl = `${API_RAW}/vendas?idLavanderia=${idLavanderia}`
       + `&dataInicio=${dataInicio}&dataTermino=${dataTermino}`
       + `&somenteSucesso=true&pagina=${pagina}&quantidade=1000`;
-    const resp = await fetch(url, { headers: { 'x-api-key': API_KEY } });
+    const resp = await fetch(proxyUrl(rawUrl), { headers: { 'x-api-key': API_KEY } });
     if (!resp.ok) throw new Error(`Erro API: ${resp.status}`);
     const txt = await resp.text();
     if (!txt || !txt.startsWith('[')) break;
@@ -330,7 +334,7 @@ async function buscarVendas(idLavanderia, dataInicio, dataTermino) {
   }
   return todas;
 }
-
+ 
 function processarVendas(vendas) {
   const txs = [];
   for (const v of vendas) {
@@ -338,15 +342,15 @@ function processarVendas(vendas) {
     for (const item of (v.pedido?.itens || [])) {
       txs.push({
         data,
-        tipo:             item.tipoServico === 'LAVAGEM' ? 'Lavagem' : 'Secagem',
-        valor:            item.valor,
+        tipo: item.tipoServico === 'LAVAGEM' ? 'Lavagem' : 'Secagem',
+        valor: item.valor,
         valorSemDesconto: item.valorSemDesconto ?? item.valor,
       });
     }
   }
   return txs.sort((a, b) => b.data.localeCompare(a.data));
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 // CARREGAR MÊS
 // ════════════════════════════════════════════════════════════════
@@ -354,45 +358,43 @@ async function carregarMes() {
   const mes = document.getElementById('mesSel').value;
   if (!mes) return;
   currentMes = mes;
-
   const [ano, m] = mes.split('-').map(Number);
   const ultimoDia = new Date(ano, m, 0).getDate();
-
+ 
   document.getElementById('loading').style.display = 'block';
   document.getElementById('dashContent').style.display = 'none';
-
+ 
   try {
-    // Buscar mês atual
     let dados;
     if (historicoCache[mes]) {
       dados = historicoCache[mes];
     } else {
-      const dataInicio = `${mes}-01T00:00:00Z`;
+      const dataInicio  = `${mes}-01T00:00:00Z`;
       const dataTermino = `${mes}-${pad(ultimoDia)}T23:59:59Z`;
       const vendas = await buscarVendas(currentCfg.id, dataInicio, dataTermino);
-      const txs = processarVendas(vendas);
+      const txs    = processarVendas(vendas);
       const lavCnt = txs.filter(t => t.tipo === 'Lavagem').length;
       const secCnt = txs.filter(t => t.tipo === 'Secagem').length;
       dados = { lavCnt, secCnt, txs };
       historicoCache[mes] = dados;
     }
-
+ 
     currentTxs = dados.txs;
     const { lavCnt, secCnt } = dados;
     const total = lavCnt * currentCfg.repasse.Lavagem + secCnt * currentCfg.repasse.Secagem;
-
+ 
     // KPIs
-    document.getElementById('kpiCiclos').textContent = lavCnt + secCnt;
-    document.getElementById('kpiCiclosSub').textContent = `${lavCnt} lavagens + ${secCnt} secagens`;
-    document.getElementById('kpiRepasse').textContent = brl(total);
+    document.getElementById('kpiCiclos').textContent    = lavCnt + secCnt;
+    document.getElementById('kpiCiclosSub').textContent  = `${lavCnt} lavagens + ${secCnt} secagens`;
+    document.getElementById('kpiRepasse').textContent    = brl(total);
     document.getElementById('kpiRepasseSub').textContent = `Vencimento: ${calcVencimento(ano, m)}`;
-    document.getElementById('kpiLav').textContent = lavCnt;
-    document.getElementById('kpiSec').textContent = secCnt;
-
-    // Período + Vencimento info
+    document.getElementById('kpiLav').textContent        = lavCnt;
+    document.getElementById('kpiSec').textContent        = secCnt;
+ 
+    // Período + Vencimento
     document.getElementById('infoPeriodo').textContent = `01/${pad(m)}/${ano} a ${pad(ultimoDia)}/${pad(m)}/${ano}`;
-    document.getElementById('infoVenc').textContent = calcVencimento(ano, m);
-
+    document.getElementById('infoVenc').textContent    = calcVencimento(ano, m);
+ 
     // Resumo table
     const rBody = document.getElementById('resumoBody');
     const rFoot = document.getElementById('resumoFoot');
@@ -404,7 +406,7 @@ async function carregarMes() {
       rBody.innerHTML += `<tr><td style="font-weight:600">${tipo}</td><td>${cnt}</td><td style="text-align:right">${brl(rep)}</td><td style="text-align:right;font-weight:700">${brl(cnt * rep)}</td></tr>`;
     }
     rFoot.innerHTML = `<tr style="background:var(--verde);color:#fff;font-weight:700"><td>TOTAL</td><td>${lavCnt+secCnt}</td><td></td><td style="text-align:right;font-size:15px">${brl(total)}</td></tr>`;
-
+ 
     // Transações table
     const txBody = document.getElementById('txBody');
     txBody.innerHTML = '';
@@ -414,29 +416,28 @@ async function carregarMes() {
       txBody.innerHTML += `<tr><td>${t.data}</td><td class="${tipoCls}">${t.tipo}</td><td>${brl(t.valorSemDesconto)}</td><td${temDesc?' class="desc"':''}>${brl(t.valor)}</td></tr>`;
     }
     document.getElementById('txFooter').textContent = `${currentTxs.length} transações no período`;
-
-    // Chart — buscar últimos 6 meses
+ 
+    // Chart
     await atualizarGrafico(ano, m);
-
-    document.getElementById('loading').style.display = 'none';
+ 
+    document.getElementById('loading').style.display    = 'none';
     document.getElementById('dashContent').style.display = 'block';
   } catch (e) {
     document.getElementById('loading').innerHTML = `<div style="color:var(--rosa);font-weight:600">Erro ao carregar dados: ${e.message}</div>`;
     console.error(e);
   }
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 // GRÁFICO
 // ════════════════════════════════════════════════════════════════
 async function atualizarGrafico(anoAtual, mesAtual) {
-  // Buscar últimos 6 meses (incluindo o atual)
   const meses = [];
   for (let i = 5; i >= 0; i--) {
     const d = new Date(anoAtual, mesAtual - 1 - i, 1);
     meses.push({ ano: d.getFullYear(), mes: d.getMonth() + 1, key: `${d.getFullYear()}-${pad(d.getMonth()+1)}` });
   }
-
+ 
   const histData = [];
   for (const m of meses) {
     if (historicoCache[m.key]) {
@@ -445,7 +446,7 @@ async function atualizarGrafico(anoAtual, mesAtual) {
       try {
         const ultimoDia = new Date(m.ano, m.mes, 0).getDate();
         const vendas = await buscarVendas(currentCfg.id, `${m.key}-01T00:00:00Z`, `${m.key}-${pad(ultimoDia)}T23:59:59Z`);
-        const txs = processarVendas(vendas);
+        const txs    = processarVendas(vendas);
         const lavCnt = txs.filter(t => t.tipo === 'Lavagem').length;
         const secCnt = txs.filter(t => t.tipo === 'Secagem').length;
         historicoCache[m.key] = { lavCnt, secCnt, txs };
@@ -455,34 +456,25 @@ async function atualizarGrafico(anoAtual, mesAtual) {
       }
     }
   }
-
-  // Destruir chart anterior
+ 
   if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-
-  const canvas = document.getElementById('chartCanvas');
+ 
+  const canvas  = document.getElementById('chartCanvas');
   const lavData = histData.map(h => h.lavagem);
   const secData = histData.map(h => h.secagem);
-
+ 
   chartInstance = new Chart(canvas, {
     type: 'bar',
     data: {
       labels: histData.map(h => h.label),
       datasets: [
-        { label: 'Lavagem', data: lavData,
-          backgroundColor: lavData.map((_, i) => i === lavData.length-1 ? '#0a7a6a' : '#0ea18e'),
-          borderRadius: 4 },
-        { label: 'Secagem', data: secData,
-          backgroundColor: secData.map((_, i) => i === secData.length-1 ? '#c94060' : '#eb6680'),
-          borderRadius: 4 },
+        { label: 'Lavagem', data: lavData, backgroundColor: lavData.map((_, i) => i === lavData.length-1 ? '#0a7a6a' : '#0ea18e'), borderRadius: 4 },
+        { label: 'Secagem', data: secData, backgroundColor: secData.map((_, i) => i === secData.length-1 ? '#c94060' : '#eb6680'), borderRadius: 4 },
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      animation: { duration: 400 },
-      plugins: {
-        legend: { labels: { color: '#4a6460', font: { size: 13, weight: '600' }, padding: 20 } },
-      },
+      responsive: true, maintainAspectRatio: true, animation: { duration: 400 },
+      plugins: { legend: { labels: { color: '#4a6460', font: { size: 13, weight: '600' }, padding: 20 } } },
       scales: {
         x: { grid: { display: false }, ticks: { color: '#4a6460', font: { weight: '600' } } },
         y: { grid: { color: '#e0f0ef' }, ticks: { color: '#4a6460' }, beginAtZero: true },
@@ -504,7 +496,7 @@ async function atualizarGrafico(anoAtual, mesAtual) {
     }]
   });
 }
-
+ 
 // ════════════════════════════════════════════════════════════════
 // PDF GENERATION
 // ════════════════════════════════════════════════════════════════
@@ -512,88 +504,119 @@ async function baixarPDF() {
   const btn = document.getElementById('btnPdf');
   btn.disabled = true;
   btn.innerHTML = '⏳ Gerando...';
-
+ 
   try {
     const [ano, m] = currentMes.split('-').map(Number);
     const ultimoDia = new Date(ano, m, 0).getDate();
     const periodIni = `01/${pad(m)}/${ano}`;
     const periodFim = `${pad(ultimoDia)}/${pad(m)}/${ano}`;
     const vencimento = calcVencimento(ano, m);
-
+ 
     const dados = historicoCache[currentMes];
     const { lavCnt: lavCount, secCnt: secCount, txs } = dados;
-
+ 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 170, ML = 20;
     let y = 20;
+ 
     const VERDE=[14,161,142],VERDE_ESC=[10,122,106],ROSA=[235,102,128],CREME=[251,251,239];
     const BORDA=[200,222,221],ZEBRA=[237,246,245],TXT_ESC=[26,46,43],TXT_MED=[74,100,96],BRANCO=[255,255,255];
-
+ 
     // Header
-    doc.setFillColor(...VERDE); doc.roundedRect(ML,y,W,22,3,3,'F');
-    doc.setTextColor(...BRANCO); doc.setFont('helvetica','bold'); doc.setFontSize(18);
+    doc.setFillColor(...VERDE);
+    doc.roundedRect(ML,y,W,22,3,3,'F');
+    doc.setTextColor(...BRANCO);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(18);
     doc.text('SOAP CLUB',ML+6,y+9);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
     doc.text('Somos um clube, e também lavamos roupas',ML+6,y+15);
-    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
     doc.text('Relatório de Repasse',ML+W-4,y+8,{align:'right'});
-    doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
     doc.text('Emitido em: '+new Date().toLocaleDateString('pt-BR'),ML+W-4,y+14,{align:'right'});
     y+=28;
-
+ 
     // Info block
     const infoH = 20;
-    doc.setFillColor(...CREME); doc.setDrawColor(...BORDA); doc.roundedRect(ML,y,W,infoH,2,2,'FD');
-    doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.setFillColor(...CREME);
+    doc.setDrawColor(...BORDA);
+    doc.roundedRect(ML,y,W,infoH,2,2,'FD');
+    doc.setTextColor(...VERDE);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(13);
     doc.text(currentCondo,ML+5,y+8);
-    doc.setDrawColor(...BORDA); doc.setLineWidth(0.3); doc.line(ML,y+11,ML+W,y+11);
-    doc.setTextColor(...TXT_MED); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-    doc.text('PERÍODO',ML+5,y+15); doc.text('TOTAL DE CICLOS',ML+5+W/3,y+15); doc.text('VENCIMENTO',ML+5+W*2/3,y+15);
-    doc.setTextColor(...TXT_ESC); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.setDrawColor(...BORDA);
+    doc.setLineWidth(0.3);
+    doc.line(ML,y+11,ML+W,y+11);
+    doc.setTextColor(...TXT_MED);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(7);
+    doc.text('PERÍODO',ML+5,y+15);
+    doc.text('TOTAL DE CICLOS',ML+5+W/3,y+15);
+    doc.text('VENCIMENTO',ML+5+W*2/3,y+15);
+    doc.setTextColor(...TXT_ESC);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8.5);
     doc.text(periodIni+' — '+periodFim,ML+5,y+20);
     doc.text(String(lavCount+secCount),ML+5+W/3,y+20);
-    doc.setTextColor(...ROSA); doc.text(vencimento,ML+5+W*2/3,y+20);
+    doc.setTextColor(...ROSA);
+    doc.text(vencimento,ML+5+W*2/3,y+20);
     y+=infoH+6;
-
+ 
     // Resumo
-    doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text('Resumo de Repasse',ML,y); y+=4;
-    let totalRep=0; const resumoRows=[];
+    doc.setTextColor(...VERDE);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.text('Resumo de Repasse',ML,y);
+    y+=4;
+    let totalRep=0;
+    const resumoRows=[];
     for(const [tipo,cnt] of [['Lavagem',lavCount],['Secagem',secCount]]){
-      if(!cnt)continue; const rep=currentCfg.repasse[tipo],vt=cnt*rep; totalRep+=vt;
+      if(!cnt)continue;
+      const rep=currentCfg.repasse[tipo],vt=cnt*rep;
+      totalRep+=vt;
       resumoRows.push([tipo,cnt,brl(rep),brl(vt)]);
     }
     doc.autoTable({startY:y,head:[['SERVIÇO','CICLOS','REPASSE / CICLO','VALOR TOTAL']],body:resumoRows,foot:[['TOTAL',lavCount+secCount,'',brl(totalRep)]],margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8.5,halign:'center'},footStyles:{fillColor:VERDE_ESC,textColor:BRANCO,fontStyle:'bold',fontSize:10},bodyStyles:{textColor:TXT_ESC,fontSize:9.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',fontStyle:'bold'},1:{halign:'center'},2:{halign:'center'},3:{halign:'right',fontStyle:'bold'}},didParseCell(d){if(d.section==='foot'){if(d.column.index===0)d.cell.styles.halign='left';if(d.column.index===3)d.cell.styles.halign='right';}}});
     y=doc.lastAutoTable.finalY+6;
-
-    // Chart image from canvas
+ 
+    // Chart image
     const chartCanvas = document.getElementById('chartCanvas');
     if (chartCanvas && chartInstance) {
       const chartPng = chartCanvas.toDataURL('image/png');
-      doc.setFillColor(...CREME); doc.setDrawColor(...BORDA); doc.roundedRect(ML,y,W,62,2,2,'FD');
-      doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(9.5);
+      doc.setFillColor(...CREME);
+      doc.setDrawColor(...BORDA);
+      doc.roundedRect(ML,y,W,62,2,2,'FD');
+      doc.setTextColor(...VERDE);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9.5);
       doc.text('Tendência de Ciclos — Últimos 6 Meses',ML+5,y+7);
       doc.addImage(chartPng,'PNG',ML+2,y+9,W-4,50);
       y+=68;
     }
-
+ 
     // Transações
     doc.setTextColor(...VERDE);doc.setFont('helvetica','bold');doc.setFontSize(10);
     doc.text('Detalhamento de Transações',ML,y);y+=4;
-    doc.autoTable({startY:y,head:[['DATA / HORA','TIPO','VALOR S/ DESC.','VALOR COBRADO']],body:txs.map(t=>[t.data,t.tipo,brl(t.valorSemDesconto),brl(t.valor)]),margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8,halign:'center'},bodyStyles:{textColor:TXT_ESC,fontSize:8.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',cellWidth:W*0.38},1:{halign:'center',cellWidth:W*0.18},2:{halign:'right',cellWidth:W*0.22,textColor:TXT_MED},3:{halign:'right',cellWidth:W*0.22,fontStyle:'bold'}},didParseCell(d){if(d.section==='body'&&d.column.index===1){d.cell.styles.textColor=d.cell.raw==='Lavagem'?VERDE:ROSA;d.cell.styles.fontStyle='bold';}if(d.section==='body'&&d.column.index===3){const r=txs[d.row.index];if(r&&r.valorSemDesconto!==r.valor)d.cell.styles.textColor=ROSA;}},didDrawPage(d){const pH=doc.internal.pageSize.height;doc.setDrawColor(...BORDA);doc.setLineWidth(0.3);doc.line(ML,pH-14,ML+W,pH-14);doc.setTextColor(...TXT_MED);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.text('SOAP CLUB Lavanderias  |  Gerado em '+new Date().toLocaleDateString('pt-BR')+'  |  Período: '+periodIni+' a '+periodFim,ML+W/2,pH-9,{align:'center'});doc.text('Página '+doc.internal.getCurrentPageInfo().pageNumber,ML+W,pH-9,{align:'right'});}});
-
+ 
+    doc.autoTable({startY:y,head:[['DATA / HORA','TIPO','VALOR S/ DESC.','VALOR COBRADO']],body:txs.map(t=>[t.data,t.tipo,brl(t.valorSemDesconto),brl(t.valor)]),margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8,halign:'center'},bodyStyles:{textColor:TXT_ESC,fontSize:8.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',cellWidth:W*0.38},1:{halign:'center',cellWidth:W*0.18},2:{halign:'right',cellWidth:W*0.22,textColor:TXT_MED},3:{halign:'right',cellWidth:W*0.22,fontStyle:'bold'}},didParseCell(d){if(d.section==='body'&&d.column.index===1){d.cell.styles.textColor=d.cell.raw==='Lavagem'?VERDE:ROSA;d.cell.styles.fontStyle='bold';}if(d.section==='body'&&d.column.index===3){const r=txs[d.row.index];if(r&&r.valorSemDesconto!==r.valor)d.cell.styles.textColor=ROSA;}},didDrawPage(d){const pH=doc.internal.pageSize.height;doc.setDrawColor(...BORDA);doc.setLineWidth(0.3);doc.line(ML,pH-14,ML+W,pH-14);doc.setTextColor(...TXT_MED);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.text('SOAP CLUB Lavanderias | Gerado em '+new Date().toLocaleDateString('pt-BR')+' | Período: '+periodIni+' a '+periodFim,ML+W/2,pH-9,{align:'center'});doc.text('Página '+doc.internal.getCurrentPageInfo().pageNumber,ML+W,pH-9,{align:'right'});}});
+ 
     const mesSlug = NOMES_MES_CURTO[m-1].toUpperCase() + ano;
     doc.save(`RELATORIO_${currentCfg.slug}_${mesSlug}.pdf`);
-
   } catch (e) {
     alert('Erro ao gerar PDF: ' + e.message);
     console.error(e);
   }
-
+ 
   btn.disabled = false;
   btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF`;
 }
 </script>
 </body>
 </html>
+ 
