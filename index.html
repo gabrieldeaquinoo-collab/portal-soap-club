@@ -4,22 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOAP CLUB — Portal do Síndico</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 /* ─── RESET & BASE ─────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f7f6;min-height:100vh;color:#1a2e2b}
-a{color:#0ea18e;text-decoration:none
- 
+a{color:#0ea18e;text-decoration:none}
+
 /* ─── PALETA ───────────────────────────────────────────────── */
 :root{
   --verde:#0ea18e;--verde-esc:#0a7a6a;--rosa:#eb6680;--rosa-claro:#f5b7bc;
   --creme:#fbfbef;--azul-menta:#b3dcdc;--borda:#c8dedd;--zebra:#edf6f5;
   --txt:#1a2e2b;--txt-med:#4a6460;--bg:#f0f7f6;
 }
- 
+
 /* ─── LOGIN ────────────────────────────────────────────────── */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .login-card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 4px 24px rgba(14,161,142,.12)}
@@ -34,7 +31,7 @@ a{color:#0ea18e;text-decoration:none
 .login-btn{width:100%;padding:14px;background:var(--verde);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s}
 .login-btn:hover{background:var(--verde-esc)}
 .login-err{color:var(--rosa);font-size:13px;text-align:center;margin-top:12px;display:none}
- 
+
 /* ─── DASHBOARD LAYOUT ─────────────────────────────────────── */
 .app{display:none}
 .topbar{background:var(--verde);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -43,9 +40,9 @@ a{color:#0ea18e;text-decoration:none
 .topbar .condo-name{font-size:13px;opacity:.85}
 .btn-logout{background:rgba(255,255,255,.15);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
 .btn-logout:hover{background:rgba(255,255,255,.25)}
- 
+
 .container{max-width:1000px;margin:0 auto;padding:24px 20px}
- 
+
 /* ─── MES SELECTOR ─────────────────────────────────────────── */
 .mes-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .mes-bar label{font-size:12px;font-weight:700;color:var(--txt-med);text-transform:uppercase;letter-spacing:.5px}
@@ -53,7 +50,7 @@ a{color:#0ea18e;text-decoration:none
 .mes-bar select:focus{border-color:var(--verde)}
 .btn-pdf{background:var(--verde);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto;display:flex;align-items:center;gap:6px}
 .btn-pdf:hover{background:var(--verde-esc)}
- 
+
 /* ─── KPI CARDS ────────────────────────────────────────────── */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
 .kpi{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(14,161,142,.08)}
@@ -61,13 +58,13 @@ a{color:#0ea18e;text-decoration:none
 .kpi-value{font-size:28px;font-weight:800;color:var(--verde)}
 .kpi-value.rosa{color:var(--rosa)}
 .kpi-sub{font-size:12px;color:var(--txt-med);margin-top:4px}
- 
+
 /* ─── CHART ────────────────────────────────────────────────── */
 .chart-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(14,161,142,.08);margin-bottom:24px}
 .chart-card h3{color:var(--verde);font-size:15px;font-weight:700;margin-bottom:16px}
 .chart-wrap{position:relative;width:100%;max-width:700px;margin:0 auto}
 .chart-wrap canvas{width:100%!important;height:auto!important}
- 
+
 /* ─── TABLE ────────────────────────────────────────────────── */
 .table-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(14,161,142,.08);margin-bottom:24px}
 .table-card h3{color:var(--verde);font-size:15px;font-weight:700;margin-bottom:16px}
@@ -84,12 +81,12 @@ tbody td.sec{color:var(--rosa)}
 tbody td:nth-child(3),tbody td:nth-child(4){text-align:right}
 tbody td.desc{color:var(--rosa);font-weight:600}
 .table-footer{text-align:center;padding:16px;color:var(--txt-med);font-size:13px}
- 
+
 /* ─── LOADING ──────────────────────────────────────────────── */
 .loading{text-align:center;padding:60px 20px;color:var(--txt-med)}
 .loading .spinner{width:40px;height:40px;border:4px solid var(--borda);border-top-color:var(--verde);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
- 
+
 /* ─── RESPONSIVE ───────────────────────────────────────────── */
 @media(max-width:600px){
   .kpis{grid-template-columns:1fr 1fr}
@@ -102,7 +99,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
 </style>
 </head>
 <body>
- 
+
 <!-- ═══════ LOGIN ═══════ -->
 <div class="login-wrap" id="loginScreen">
   <div class="login-card">
@@ -118,17 +115,17 @@ tbody td.desc{color:var(--rosa);font-weight:600}
     <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
   </div>
 </div>
- 
+
 <!-- ═══════ APP ═══════ -->
-<div class="app" id="app">
+<div class="app" id="app" style="display:none">
   <div class="topbar">
-    <h1>SOAP CLUB</h1>
+    <h1>SO@P CLUB</h1>
     <div class="topbar-right">
       <span class="condo-name" id="topCondoName"></span>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
   </div>
- 
+
   <div class="container">
     <!-- Seletor de mês + botão PDF -->
     <div class="mes-bar">
@@ -139,13 +136,13 @@ tbody td.desc{color:var(--rosa);font-weight:600}
         Baixar PDF
       </button>
     </div>
- 
+
     <!-- Loading -->
     <div class="loading" id="loading" style="display:none">
       <div class="spinner"></div>
       <div>Carregando dados...</div>
     </div>
- 
+
     <!-- Dashboard content -->
     <div id="dashContent" style="display:none">
       <!-- KPIs -->
@@ -169,7 +166,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <div class="kpi-value" id="kpiSec">—</div>
         </div>
       </div>
- 
+
       <!-- Gráfico -->
       <div class="chart-card">
         <h3>Tendência de Ciclos — Últimos 6 Meses</h3>
@@ -177,7 +174,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <canvas id="chartCanvas" width="700" height="280"></canvas>
         </div>
       </div>
- 
+
       <!-- Resumo de Repasse -->
       <div class="table-card">
         <h3>Resumo de Repasse</h3>
@@ -187,7 +184,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <tfoot id="resumoFoot"></tfoot>
         </table>
       </div>
- 
+
       <!-- Transações -->
       <div class="table-card">
         <h3>Detalhamento de Transações</h3>
@@ -206,7 +203,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
     </div>
   </div>
 </div>
- 
+
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIGURAÇÃO
@@ -214,14 +211,14 @@ tbody td.desc{color:var(--rosa);font-weight:600}
 const API_RAW  = 'https://apps.vmhub.vmtecnologia.io/vmlav/api/externa/v1';
 const API_KEY  = 'e2ba5e3f-143d-4e64-b3a5-bbc25592784e';
 function proxyUrl(url) { return 'https://sparkling-moon-d9dfsoap-proxy.gabrieldeaquinoo.workers.dev/?url=' + encodeURIComponent(url); }
- 
+
 const CONDOMINIOS = {
   'NEXT SKY':             { id: 2610, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'NEXT_SKY',             senha: 'nextsky2026' },
   'KZ PANAMBY':           { id: 2611, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'KZ_PANAMBY',           senha: 'kzpanamby2026' },
   'PAIQUERÊ':             { id: 2533, repasse: { Lavagem: 1.00, Secagem: 1.00 }, slug: 'PAIQUERE',             senha: 'paiquere2026' },
   'PORTAL VILA PRUDENTE': { id: 2371, repasse: { Lavagem: 3.00, Secagem: 2.00 }, slug: 'PORTAL_VILA_PRUDENTE', senha: 'portalvp2026' },
 };
- 
+
 // ════════════════════════════════════════════════════════════════
 // ESTADO
 // ════════════════════════════════════════════════════════════════
@@ -231,24 +228,24 @@ let currentTxs   = [];
 let currentMes   = null;
 let chartInstance = null;
 let historicoCache = {}; // { "2026-03": { lavCnt, secCnt, total, txs } }
- 
+
 // ════════════════════════════════════════════════════════════════
-// HELPERS
+// HE\PERS
 // ════════════════════════════════════════════════════════════════
 const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 const pad = n => String(n).padStart(2, '0');
 const NOMES_MES       = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const NOMES_MES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
- 
+
 function mesLabel(ano, mes) { return `${NOMES_MES_CURTO[mes-1]}/${String(ano).slice(2)}`; }
- 
+
 function calcVencimento(ano, mes) {
   const d = new Date(ano, mes + 1, 5);
   return `05/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
 }
- 
+
 function normalize(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); }
- 
+
 // ════════════════════════════════════════════════════════════════
 // LOGIN
 // ════════════════════════════════════════════════════════════════
@@ -256,33 +253,33 @@ function doLogin() {
   const raw   = document.getElementById('loginCondo').value.trim();
   const senha = document.getElementById('loginSenha').value.trim().toLowerCase();
   const err   = document.getElementById('loginErr');
- 
+
   if (!raw) { err.textContent = 'Digite o nome do condomínio.'; err.style.display = 'block'; return; }
- 
+
   const inputNorm = normalize(raw);
   const nome = Object.keys(CONDOMINIOS).find(k => normalize(k) === inputNorm);
- 
+
   if (!nome) { err.textContent = 'Condomínio não encontrado. Verifique o nome.'; err.style.display = 'block'; return; }
- 
+
   const cfg = CONDOMINIOS[nome];
   if (senha !== cfg.senha) { err.textContent = 'Senha incorreta. Tente novamente.'; err.style.display = 'block'; return; }
- 
+
   err.style.display = 'none';
   currentCondo = nome;
   currentCfg   = cfg;
   historicoCache = {};
- 
+
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('topCondoName').textContent = nome;
   populateMeses();
   carregarMes();
 }
- 
+
 // Enter to login
 document.getElementById('loginSenha').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('loginCondo').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
- 
+
 function doLogout() {
   currentCondo = null;
   currentCfg   = null;
@@ -294,7 +291,7 @@ function doLogout() {
   document.getElementById('loginCondo').value = '';
   document.getElementById('loginErr').style.display = 'none';
 }
- 
+
 // ════════════════════════════════════════════════════════════════
 // MES SELECTOR
 // ════════════════════════════════════════════════════════════════
@@ -312,7 +309,7 @@ function populateMeses() {
     sel.appendChild(opt);
   }
 }
- 
+
 // ════════════════════════════════════════════════════════════════
 // API
 // ════════════════════════════════════════════════════════════════
@@ -334,7 +331,7 @@ async function buscarVendas(idLavanderia, dataInicio, dataTermino) {
   }
   return todas;
 }
- 
+
 function processarVendas(vendas) {
   const txs = [];
   for (const v of vendas) {
@@ -350,7 +347,7 @@ function processarVendas(vendas) {
   }
   return txs.sort((a, b) => b.data.localeCompare(a.data));
 }
- 
+
 // ════════════════════════════════════════════════════════════════
 // CARREGAR MÊS
 // ════════════════════════════════════════════════════════════════
@@ -360,10 +357,10 @@ async function carregarMes() {
   currentMes = mes;
   const [ano, m] = mes.split('-').map(Number);
   const ultimoDia = new Date(ano, m, 0).getDate();
- 
+
   document.getElementById('loading').style.display = 'block';
   document.getElementById('dashContent').style.display = 'none';
- 
+
   try {
     let dados;
     if (historicoCache[mes]) {
@@ -378,11 +375,11 @@ async function carregarMes() {
       dados = { lavCnt, secCnt, txs };
       historicoCache[mes] = dados;
     }
- 
+
     currentTxs = dados.txs;
     const { lavCnt, secCnt } = dados;
     const total = lavCnt * currentCfg.repasse.Lavagem + secCnt * currentCfg.repasse.Secagem;
- 
+
     // KPIs
     document.getElementById('kpiCiclos').textContent    = lavCnt + secCnt;
     document.getElementById('kpiCiclosSub').textContent  = `${lavCnt} lavagens + ${secCnt} secagens`;
@@ -390,11 +387,11 @@ async function carregarMes() {
     document.getElementById('kpiRepasseSub').textContent = `Vencimento: ${calcVencimento(ano, m)}`;
     document.getElementById('kpiLav').textContent        = lavCnt;
     document.getElementById('kpiSec').textContent        = secCnt;
- 
+
     // Período + Vencimento
     document.getElementById('infoPeriodo').textContent = `01/${pad(m)}/${ano} a ${pad(ultimoDia)}/${pad(m)}/${ano}`;
     document.getElementById('infoVenc').textContent    = calcVencimento(ano, m);
- 
+
     // Resumo table
     const rBody = document.getElementById('resumoBody');
     const rFoot = document.getElementById('resumoFoot');
@@ -406,7 +403,7 @@ async function carregarMes() {
       rBody.innerHTML += `<tr><td style="font-weight:600">${tipo}</td><td>${cnt}</td><td style="text-align:right">${brl(rep)}</td><td style="text-align:right;font-weight:700">${brl(cnt * rep)}</td></tr>`;
     }
     rFoot.innerHTML = `<tr style="background:var(--verde);color:#fff;font-weight:700"><td>TOTAL</td><td>${lavCnt+secCnt}</td><td></td><td style="text-align:right;font-size:15px">${brl(total)}</td></tr>`;
- 
+
     // Transações table
     const txBody = document.getElementById('txBody');
     txBody.innerHTML = '';
@@ -416,10 +413,10 @@ async function carregarMes() {
       txBody.innerHTML += `<tr><td>${t.data}</td><td class="${tipoCls}">${t.tipo}</td><td>${brl(t.valorSemDesconto)}</td><td${temDesc?' class="desc"':''}>${brl(t.valor)}</td></tr>`;
     }
     document.getElementById('txFooter').textContent = `${currentTxs.length} transações no período`;
- 
+
     // Chart
     await atualizarGrafico(ano, m);
- 
+
     document.getElementById('loading').style.display    = 'none';
     document.getElementById('dashContent').style.display = 'block';
   } catch (e) {
@@ -427,7 +424,7 @@ async function carregarMes() {
     console.error(e);
   }
 }
- 
+
 // ════════════════════════════════════════════════════════════════
 // GRÁFICO
 // ════════════════════════════════════════════════════════════════
@@ -437,7 +434,7 @@ async function atualizarGrafico(anoAtual, mesAtual) {
     const d = new Date(anoAtual, mesAtual - 1 - i, 1);
     meses.push({ ano: d.getFullYear(), mes: d.getMonth() + 1, key: `${d.getFullYear()}-${pad(d.getMonth()+1)}` });
   }
- 
+
   const histData = [];
   for (const m of meses) {
     if (historicoCache[m.key]) {
@@ -456,13 +453,13 @@ async function atualizarGrafico(anoAtual, mesAtual) {
       }
     }
   }
- 
+
   if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
- 
+
   const canvas  = document.getElementById('chartCanvas');
   const lavData = histData.map(h => h.lavagem);
   const secData = histData.map(h => h.secagem);
- 
+
   chartInstance = new Chart(canvas, {
     type: 'bar',
     data: {
@@ -496,7 +493,7 @@ async function atualizarGrafico(anoAtual, mesAtual) {
     }]
   });
 }
- 
+
 // ════════════════════════════════════════════════════════════════
 // PDF GENERATION
 // ════════════════════════════════════════════════════════════════
@@ -504,25 +501,25 @@ async function baixarPDF() {
   const btn = document.getElementById('btnPdf');
   btn.disabled = true;
   btn.innerHTML = '⏳ Gerando...';
- 
+
   try {
     const [ano, m] = currentMes.split('-').map(Number);
     const ultimoDia = new Date(ano, m, 0).getDate();
     const periodIni = `01/${pad(m)}/${ano}`;
     const periodFim = `${pad(ultimoDia)}/${pad(m)}/${ano}`;
     const vencimento = calcVencimento(ano, m);
- 
+
     const dados = historicoCache[currentMes];
     const { lavCnt: lavCount, secCnt: secCount, txs } = dados;
- 
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 170, ML = 20;
     let y = 20;
- 
+
     const VERDE=[14,161,142],VERDE_ESC=[10,122,106],ROSA=[235,102,128],CREME=[251,251,239];
     const BORDA=[200,222,221],ZEBRA=[237,246,245],TXT_ESC=[26,46,43],TXT_MED=[74,100,96],BRANCO=[255,255,255];
- 
+
     // Header
     doc.setFillColor(...VERDE);
     doc.roundedRect(ML,y,W,22,3,3,'F');
@@ -540,7 +537,7 @@ async function baixarPDF() {
     doc.setFontSize(8);
     doc.text('Emitido em: '+new Date().toLocaleDateString('pt-BR'),ML+W-4,y+14,{align:'right'});
     y+=28;
- 
+
     // Info block
     const infoH = 20;
     doc.setFillColor(...CREME);
@@ -567,7 +564,7 @@ async function baixarPDF() {
     doc.setTextColor(...ROSA);
     doc.text(vencimento,ML+5+W*2/3,y+20);
     y+=infoH+6;
- 
+
     // Resumo
     doc.setTextColor(...VERDE);
     doc.setFont('helvetica','bold');
@@ -584,7 +581,7 @@ async function baixarPDF() {
     }
     doc.autoTable({startY:y,head:[['SERVIÇO','CICLOS','REPASSE / CICLO','VALOR TOTAL']],body:resumoRows,foot:[['TOTAL',lavCount+secCount,'',brl(totalRep)]],margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8.5,halign:'center'},footStyles:{fillColor:VERDE_ESC,textColor:BRANCO,fontStyle:'bold',fontSize:10},bodyStyles:{textColor:TXT_ESC,fontSize:9.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',fontStyle:'bold'},1:{halign:'center'},2:{halign:'center'},3:{halign:'right',fontStyle:'bold'}},didParseCell(d){if(d.section==='foot'){if(d.column.index===0)d.cell.styles.halign='left';if(d.column.index===3)d.cell.styles.halign='right';}}});
     y=doc.lastAutoTable.finalY+6;
- 
+
     // Chart image
     const chartCanvas = document.getElementById('chartCanvas');
     if (chartCanvas && chartInstance) {
@@ -599,24 +596,26 @@ async function baixarPDF() {
       doc.addImage(chartPng,'PNG',ML+2,y+9,W-4,50);
       y+=68;
     }
- 
+
     // Transações
     doc.setTextColor(...VERDE);doc.setFont('helvetica','bold');doc.setFontSize(10);
     doc.text('Detalhamento de Transações',ML,y);y+=4;
- 
+
     doc.autoTable({startY:y,head:[['DATA / HORA','TIPO','VALOR S/ DESC.','VALOR COBRADO']],body:txs.map(t=>[t.data,t.tipo,brl(t.valorSemDesconto),brl(t.valor)]),margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8,halign:'center'},bodyStyles:{textColor:TXT_ESC,fontSize:8.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',cellWidth:W*0.38},1:{halign:'center',cellWidth:W*0.18},2:{halign:'right',cellWidth:W*0.22,textColor:TXT_MED},3:{halign:'right',cellWidth:W*0.22,fontStyle:'bold'}},didParseCell(d){if(d.section==='body'&&d.column.index===1){d.cell.styles.textColor=d.cell.raw==='Lavagem'?VERDE:ROSA;d.cell.styles.fontStyle='bold';}if(d.section==='body'&&d.column.index===3){const r=txs[d.row.index];if(r&&r.valorSemDesconto!==r.valor)d.cell.styles.textColor=ROSA;}},didDrawPage(d){const pH=doc.internal.pageSize.height;doc.setDrawColor(...BORDA);doc.setLineWidth(0.3);doc.line(ML,pH-14,ML+W,pH-14);doc.setTextColor(...TXT_MED);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.text('SOAP CLUB Lavanderias | Gerado em '+new Date().toLocaleDateString('pt-BR')+' | Período: '+periodIni+' a '+periodFim,ML+W/2,pH-9,{align:'center'});doc.text('Página '+doc.internal.getCurrentPageInfo().pageNumber,ML+W,pH-9,{align:'right'});}});
- 
+
     const mesSlug = NOMES_MES_CURTO[m-1].toUpperCase() + ano;
     doc.save(`RELATORIO_${currentCfg.slug}_${mesSlug}.pdf`);
   } catch (e) {
     alert('Erro ao gerar PDF: ' + e.message);
     console.error(e);
   }
- 
+
   btn.disabled = false;
   btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF`;
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </body>
 </html>
- 
