@@ -208,9 +208,10 @@ tbody td.desc{color:var(--rosa);font-weight:600}
 // ════════════════════════════════════════════════════════════════
 // CONFIGURAÇÃO
 // ════════════════════════════════════════════════════════════════
-const API_RAW  = 'https://apps.vmhub.vmtecnologia.io/vmlav/api/externa/v1';
-const API_KEY  = 'e2ba5e3f-143d-4e64-b3a5-bbc25592784e';
-function proxyUrl(url) { return 'https://sparkling-moon-d9dfsoap-proxy.gabrieldeaquinoo.workers.dev/?url=' + encodeURIComponent(url); }
+// CONFIGURAÇÃO SUPABASE
+const SUPABASE_URL = 'https://bnzjmhtslfvkkwqmzcof.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuemptaHRzbGZ2a2t3cW16Y29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjcwNTYsImV4cCI6MjA5MTUwMzA1Nn0.rB8dKFYP7WRzBdBO7p_NCdNeIdnMxn4zItrpgc_pb1Q';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const CONDOMINIOS = {
   'NEXT SKY':             { id: 2610, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'NEXT_SKY',             senha: 'nextsky2026' },
@@ -314,34 +315,28 @@ function populateMeses() {
 // API
 // ════════════════════════════════════════════════════════════════
 async function buscarVendas(idLavanderia, dataInicio, dataTermino) {
-  let todas = [], pagina = 0;
-  while (true) {
-    const rawUrl = `${API_RAW}/vendas?idLavanderia=${idLavanderia}`
-      + `&dataInicio=${dataInicio}&dataTermino=${dataTermino}`
-      + `&somenteSucesso=true&pagina=${pagina}&quantidade=1000`;
-    const resp = await fetch(proxyUrl(rawUrl), { headers: { 'x-api-key': API_KEY } });
-    if (!resp.ok) throw new Error(`Erro API: ${resp.status}`);
-    const txt = await resp.text();
-    if (!txt || !txt.startsWith('[')) break;
-    const dados = JSON.parse(txt);
-    if (!dados.length) break;
-    todas = todas.concat(dados);
-    if (dados.length < 1000) break;
-    pagina++;
-  }
-  return todas;
+  const { data, error } = await sb
+    .from('vendas')
+    .select('data, vendas_itens(tipo_servico, valor, valor_sem_desconto)')
+    .eq('id_lavanderia', idLavanderia)
+    .eq('status', 'SUCESSO')
+    .gte('data', dataInicio)
+    .lte('data', dataTermino)
+    .order('data', { ascending: false });
+  if (error) throw new Error('Erro Supabase: ' + error.message);
+  return data || [];
 }
 
 function processarVendas(vendas) {
   const txs = [];
   for (const v of vendas) {
     const data = v.data.replace('T', ' ').substring(0, 16);
-    for (const item of (v.pedido?.itens || [])) {
+    for (const item of (v.vendas_itens || [])) {
       txs.push({
         data,
-        tipo: item.tipoServico === 'LAVAGEM' ? 'Lavagem' : 'Secagem',
-        valor: item.valor,
-        valorSemDesconto: item.valorSemDesconto ?? item.valor,
+        tipo: item.tipo_servico === 'LAVAGEM' ? 'Lavagem' : 'Secagem',
+        valor: parseFloat(item.valor),
+        valorSemDesconto: parseFloat(item.valor_sem_desconto ?? item.valor),
       });
     }
   }
@@ -614,6 +609,7 @@ async function baixarPDF() {
   btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF`;
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
