@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOAP CLUB — Portal do Síndico</title>
+<!-- Supabase DEVE estar no head para createClient estar disponível no inline script -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ─── RESET & BASE ─────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,8 +34,7 @@ a{color:#0ea18e;text-decoration:none}
 .login-btn:hover{background:var(--verde-esc)}
 .login-err{color:var(--rosa);font-size:13px;text-align:center;margin-top:12px;display:none}
 
-/* ─── DASHBOARD LAYOUT ─────────────────────────────────────── */
-.app{display:none}
+/* ─── TOPBAR ───────────────────────────────────────────────── */
 .topbar{background:var(--verde);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .topbar h1{font-size:20px;font-weight:800;letter-spacing:-.5px}
 .topbar-right{display:flex;align-items:center;gap:14px}
@@ -41,6 +42,7 @@ a{color:#0ea18e;text-decoration:none}
 .btn-logout{background:rgba(255,255,255,.15);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
 .btn-logout:hover{background:rgba(255,255,255,.25)}
 
+/* ─── LAYOUT ───────────────────────────────────────────────── */
 .container{max-width:1000px;margin:0 auto;padding:24px 20px}
 
 /* ─── MES SELECTOR ─────────────────────────────────────────── */
@@ -52,11 +54,12 @@ a{color:#0ea18e;text-decoration:none}
 .btn-pdf:hover{background:var(--verde-esc)}
 
 /* ─── KPI CARDS ────────────────────────────────────────────── */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
 .kpi{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(14,161,142,.08)}
 .kpi-label{font-size:11px;font-weight:700;color:var(--txt-med);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.kpi-value{font-size:28px;font-weight:800;color:var(--verde)}
+.kpi-value{font-size:26px;font-weight:800;color:var(--verde)}
 .kpi-value.rosa{color:var(--rosa)}
+.kpi-value.azul{color:#2196f3}
 .kpi-sub{font-size:12px;color:var(--txt-med);margin-top:4px}
 
 /* ─── CHART ────────────────────────────────────────────────── */
@@ -72,13 +75,10 @@ a{color:#0ea18e;text-decoration:none}
 .table-info strong{color:var(--txt)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 thead th{background:var(--verde);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:12px}
-thead th:nth-child(3),thead th:nth-child(4){text-align:right}
-tbody td{padding:9px 12px;border-bottom:1px solid #edf6f5}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--zebra)}
 tbody tr:nth-child(even){background:var(--zebra)}
-tbody td:nth-child(2){font-weight:600}
-tbody td.lav{color:var(--verde)}
-tbody td.sec{color:var(--rosa)}
-tbody td:nth-child(3),tbody td:nth-child(4){text-align:right}
+tbody td.lav{color:var(--verde);font-weight:600}
+tbody td.sec{color:var(--rosa);font-weight:600}
 tbody td.desc{color:var(--rosa);font-weight:600}
 .table-footer{text-align:center;padding:16px;color:var(--txt-med);font-size:13px}
 
@@ -87,21 +87,86 @@ tbody td.desc{color:var(--rosa);font-weight:600}
 .loading .spinner{width:40px;height:40px;border:4px solid var(--borda);border-top-color:var(--verde);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ─── TABS ─────────────────────────────────────────────────── */
+.tab-bar{display:flex;gap:4px;margin-bottom:24px;background:#fff;border-radius:12px;padding:6px;box-shadow:0 2px 12px rgba(14,161,142,.08)}
+.tab-btn{flex:1;padding:10px 8px;border:none;background:transparent;border-radius:8px;font-size:13px;font-weight:600;color:var(--txt-med);cursor:pointer;transition:all .2s}
+.tab-btn.active{background:var(--verde);color:#fff}
+.tab-btn:hover:not(.active){background:var(--zebra)}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* ─── FORM LANÇAR LEITURA ──────────────────────────────────── */
+.form-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(14,161,142,.08);margin-bottom:24px}
+.form-card h3{color:var(--verde);font-size:15px;font-weight:700;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.form-section{background:var(--bg);border-radius:10px;padding:16px;border:1.5px solid var(--borda)}
+.form-section h4{font-size:13px;font-weight:700;color:var(--txt-med);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:11px;font-weight:700;color:var(--txt-med);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.form-row input{width:100%;padding:10px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:14px;color:var(--txt);background:#fff;outline:none}
+.form-row input:focus{border-color:var(--verde)}
+.form-row .preview{font-size:12px;color:var(--verde);font-weight:700;margin-top:4px;min-height:18px}
+.form-row .preview.err{color:var(--rosa)}
+.total-preview{background:var(--verde);color:#fff;border-radius:10px;padding:16px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.total-preview .tp-label{font-size:13px;opacity:.85}
+.total-preview .tp-value{font-size:24px;font-weight:800}
+.obs-row{margin-bottom:20px}
+.obs-row label{display:block;font-size:11px;font-weight:700;color:var(--txt-med);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.obs-row textarea{width:100%;padding:10px 12px;border:1.5px solid var(--borda);border-radius:8px;font-size:14px;color:var(--txt);background:#fff;outline:none;resize:vertical;min-height:70px}
+.obs-row textarea:focus{border-color:var(--verde)}
+.btn-salvar{background:var(--verde);color:#fff;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%}
+.btn-salvar:hover{background:var(--verde-esc)}
+.btn-salvar:disabled{opacity:.5;cursor:not-allowed}
+.already-exists{background:#fff8e8;border:1.5px solid #f5c842;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:#7a5c00}
+
+/* ─── COMPARATIVO ──────────────────────────────────────────── */
+.comp-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(14,161,142,.08);margin-bottom:24px}
+.comp-card h3{color:var(--verde);font-size:15px;font-weight:700;margin-bottom:16px}
+.comp-table thead th{text-align:center}
+.comp-table thead th:first-child{text-align:left}
+.comp-table tbody td{text-align:center}
+.comp-table tbody td:first-child{text-align:left;font-weight:600}
+.diff-pos{color:var(--rosa);font-weight:700}
+.diff-neg{color:var(--verde-esc);font-weight:700}
+.diff-zero{color:var(--txt-med)}
+.comp-note{margin-top:14px;padding:10px 14px;background:var(--creme);border-radius:8px;font-size:12px;color:var(--txt-med);line-height:1.5}
+
+/* ─── MODAL ────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:32px 28px;max-width:420px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.modal-box h3{font-size:18px;font-weight:800;color:var(--txt);margin-bottom:8px}
+.modal-box p{font-size:13px;color:var(--txt-med);margin-bottom:4px}
+.modal-data{background:var(--zebra);border-radius:8px;padding:14px 16px;margin:16px 0;font-size:14px;line-height:1.8}
+.modal-actions{display:flex;gap:12px;margin-top:20px}
+.modal-cancel{flex:1;padding:12px;background:var(--zebra);color:var(--txt-med);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.modal-confirm-btn{flex:2;padding:12px;background:var(--verde);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
+.modal-confirm-btn:hover{background:var(--verde-esc)}
+.modal-confirm-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ─── TOAST ────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--verde);color:#fff;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;z-index:2000;box-shadow:0 4px 20px rgba(14,161,142,.3);transform:translateY(100px);opacity:0;transition:all .35s}
+.toast.show{transform:translateY(0);opacity:1}
+
 /* ─── RESPONSIVE ───────────────────────────────────────────── */
-@media(max-width:600px){
+@media(max-width:640px){
   .kpis{grid-template-columns:1fr 1fr}
-  .kpi-value{font-size:22px}
+  .kpi-value{font-size:20px}
   .topbar h1{font-size:16px}
   .container{padding:16px 12px}
   table{font-size:11px}
   thead th,tbody td{padding:7px 6px}
+  .form-grid{grid-template-columns:1fr}
+  .tab-btn{font-size:11px;padding:8px 4px}
+  .total-preview .tp-value{font-size:18px}
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<!-- ═══════ LOGIN ═══════ -->
+<!-- ═══════════════════════════════════════════════════════════
+     LOGIN
+════════════════════════════════════════════════════════════ -->
 <div class="login-wrap" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">
@@ -113,12 +178,14 @@ tbody td.desc{color:var(--rosa);font-weight:600}
     <label>Senha</label>
     <input type="password" id="loginSenha" placeholder="Digite sua senha">
     <button class="login-btn" onclick="doLogin()">Entrar</button>
-    <div class="login-err" id="loginErr">Senha incorreta. Tente novamente.</div>
+    <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
-<!-- ═══════ APP ═══════ -->
-<div class="app" id="app" style="display:none">
+<!-- ═══════════════════════════════════════════════════════════
+     APP CICLOS  (NEXT SKY · KZ PANAMBY · PAIQUERÊ · PORTAL VP)
+════════════════════════════════════════════════════════════ -->
+<div id="app" style="display:none">
   <div class="topbar">
     <h1>SOAP CLUB</h1>
     <div class="topbar-right">
@@ -126,9 +193,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
   </div>
-
   <div class="container">
-    <!-- Seletor de mês + botão PDF -->
     <div class="mes-bar">
       <label>Mês:</label>
       <select id="mesSel" onchange="carregarMes()"></select>
@@ -137,56 +202,25 @@ tbody td.desc{color:var(--rosa);font-weight:600}
         Baixar PDF
       </button>
     </div>
-
-    <!-- Loading -->
     <div class="loading" id="loading" style="display:none">
-      <div class="spinner"></div>
-      <div>Carregando dados...</div>
+      <div class="spinner"></div><div>Carregando dados...</div>
     </div>
-
-    <!-- Dashboard content -->
     <div id="dashContent" style="display:none">
-      <!-- KPIs -->
       <div class="kpis">
-        <div class="kpi">
-          <div class="kpi-label">Total de Ciclos</div>
-          <div class="kpi-value" id="kpiCiclos">—</div>
-          <div class="kpi-sub" id="kpiCiclosSub"></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Valor de Repasse</div>
-          <div class="kpi-value rosa" id="kpiRepasse">—</div>
-          <div class="kpi-sub" id="kpiRepasseSub"></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Lavagens</div>
-          <div class="kpi-value" id="kpiLav">—</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Secagens</div>
-          <div class="kpi-value" id="kpiSec">—</div>
-        </div>
+        <div class="kpi"><div class="kpi-label">Total de Ciclos</div><div class="kpi-value" id="kpiCiclos">—</div><div class="kpi-sub" id="kpiCiclosSub"></div></div>
+        <div class="kpi"><div class="kpi-label">Valor de Repasse</div><div class="kpi-value rosa" id="kpiRepasse">—</div><div class="kpi-sub" id="kpiRepasseSub"></div></div>
+        <div class="kpi"><div class="kpi-label">Lavagens</div><div class="kpi-value" id="kpiLav">—</div></div>
+        <div class="kpi"><div class="kpi-label">Secagens</div><div class="kpi-value" id="kpiSec">—</div></div>
       </div>
-
-      <!-- Gráfico -->
       <div class="chart-card">
         <h3>Tendência de Ciclos — Últimos 6 Meses</h3>
-        <div class="chart-wrap">
-          <canvas id="chartCanvas" width="700" height="280"></canvas>
-        </div>
+        <div class="chart-wrap"><canvas id="chartCanvas" width="700" height="280"></canvas></div>
       </div>
-
-      <!-- Resumo de Repasse -->
       <div class="table-card">
         <h3>Resumo de Repasse</h3>
-        <table>
-          <thead><tr><th>Serviço</th><th>Ciclos</th><th>Repasse / Ciclo</th><th>Valor Total</th></tr></thead>
-          <tbody id="resumoBody"></tbody>
-          <tfoot id="resumoFoot"></tfoot>
-        </table>
+        <table><thead><tr><th>Serviço</th><th>Ciclos</th><th style="text-align:right">Repasse / Ciclo</th><th style="text-align:right">Valor Total</th></tr></thead>
+        <tbody id="resumoBody"></tbody><tfoot id="resumoFoot"></tfoot></table>
       </div>
-
-      <!-- Transações -->
       <div class="table-card">
         <h3>Detalhamento de Transações</h3>
         <div class="table-info">
@@ -194,10 +228,8 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <span>Vencimento: <strong id="infoVenc" style="color:var(--rosa)"></strong></span>
         </div>
         <div style="max-height:500px;overflow-y:auto">
-          <table>
-            <thead><tr><th>Data / Hora</th><th>Tipo</th><th>Valor s/ Desc.</th><th>Valor Cobrado</th></tr></thead>
-            <tbody id="txBody"></tbody>
-          </table>
+          <table><thead><tr><th>Data / Hora</th><th>Tipo</th><th style="text-align:right">Valor s/ Desc.</th><th style="text-align:right">Valor Cobrado</th></tr></thead>
+          <tbody id="txBody"></tbody></table>
         </div>
         <div class="table-footer" id="txFooter"></div>
       </div>
@@ -205,51 +237,243 @@ tbody td.desc{color:var(--rosa);font-weight:600}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     APP CONSUMO  (CRIAÇÃO · VIA ROVAI)
+════════════════════════════════════════════════════════════ -->
+<div id="appConsumo" style="display:none">
+  <div class="topbar">
+    <h1>SOAP CLUB</h1>
+    <div class="topbar-right">
+      <span class="condo-name" id="topCondoNameC"></span>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+  <div class="container">
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tbRelatorio"   onclick="showTab('relatorio')">📊 Relatório</button>
+      <button class="tab-btn"        id="tbLancar"      onclick="showTab('lancar')">📝 Lançar Leitura</button>
+      <button class="tab-btn"        id="tbComparativo" onclick="showTab('comparativo')">⚖️ Comparativo</button>
+    </div>
+
+    <!-- ── TAB: RELATÓRIO ─────────────────────────── -->
+    <div id="tabRelatorio" class="tab-pane active">
+      <div class="loading" id="loadingRel" style="display:none">
+        <div class="spinner"></div><div>Carregando leituras...</div>
+      </div>
+      <div id="relContent" style="display:none">
+        <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+          <div class="kpi"><div class="kpi-label">⚡ Consumo Energia</div><div class="kpi-value" id="kpiEnergia">—</div><div class="kpi-sub" id="kpiEnergiaSub"></div></div>
+          <div class="kpi"><div class="kpi-label">⚡ Valor Energia</div><div class="kpi-value rosa" id="kpiValorEnergia">—</div></div>
+          <div class="kpi"><div class="kpi-label">💧 Consumo Água</div><div class="kpi-value azul" id="kpiAgua">—</div><div class="kpi-sub" id="kpiAguaSub"></div></div>
+          <div class="kpi"><div class="kpi-label">💧 Valor Água</div><div class="kpi-value rosa" id="kpiValorAgua">—</div></div>
+          <div class="kpi"><div class="kpi-label">💰 Total Repasse</div><div class="kpi-value rosa" id="kpiTotalConsumo">—</div><div class="kpi-sub" id="kpiTotalSub"></div></div>
+        </div>
+        <div class="chart-card">
+          <h3>Histórico de Consumo</h3>
+          <div class="chart-wrap"><canvas id="chartConsumoCan" width="700" height="280"></canvas></div>
+        </div>
+        <div class="table-card">
+          <h3>Histórico de Leituras</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>Mês</th>
+                <th style="text-align:right">Energia (kWh)</th>
+                <th style="text-align:right">Tarifa Energia</th>
+                <th style="text-align:right">Valor Energia</th>
+                <th style="text-align:right">Água (m³)</th>
+                <th style="text-align:right">Tarifa Água</th>
+                <th style="text-align:right">Valor Água</th>
+                <th style="text-align:right">Total</th>
+              </tr></thead>
+              <tbody id="leiturasBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="relEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--txt-med)">
+        <div style="font-size:48px;margin-bottom:16px">📊</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px">Nenhuma leitura registrada</div>
+        <div style="font-size:14px">Vá para <strong>Lançar Leitura</strong> para registrar o primeiro mês.</div>
+      </div>
+    </div>
+
+    <!-- ── TAB: LANÇAR LEITURA ────────────────────── -->
+    <div id="tabLancar" class="tab-pane">
+      <div class="form-card">
+        <h3>Lançar Nova Leitura</h3>
+        <div class="mes-bar" style="margin-bottom:20px">
+          <label>Mês de referência:</label>
+          <select id="mesLancar" onchange="onMesLancarChange()"></select>
+        </div>
+        <div id="alreadyExists" class="already-exists" style="display:none">
+          ⚠️ Já existe uma leitura para este mês. Para corrigir, entre em contato com o suporte.
+        </div>
+        <div id="formLancar">
+          <div class="form-grid">
+            <!-- ENERGIA -->
+            <div class="form-section">
+              <h4>⚡ Energia</h4>
+              <div class="form-row">
+                <label>Leitura Anterior (kWh)</label>
+                <input type="number" id="fEnAnt" step="0.01" min="0" placeholder="Ex: 1250.50" oninput="calcPreview()">
+              </div>
+              <div class="form-row">
+                <label>Leitura Atual (kWh)</label>
+                <input type="number" id="fEnAtual" step="0.01" min="0" placeholder="Ex: 1380.20" oninput="calcPreview()">
+                <div class="preview" id="prevEnConsumo"></div>
+              </div>
+              <div class="form-row">
+                <label>Tarifa (R$/kWh)</label>
+                <input type="number" id="fEnTarifa" step="0.0001" min="0.0001" placeholder="Ex: 0.8532" oninput="calcPreview()">
+                <div class="preview" id="prevEnValor"></div>
+              </div>
+            </div>
+            <!-- ÁGUA -->
+            <div class="form-section">
+              <h4>💧 Água</h4>
+              <div class="form-row">
+                <label>Leitura Anterior (m³)</label>
+                <input type="number" id="fAgAnt" step="0.001" min="0" placeholder="Ex: 45.000" oninput="calcPreview()">
+              </div>
+              <div class="form-row">
+                <label>Leitura Atual (m³)</label>
+                <input type="number" id="fAgAtual" step="0.001" min="0" placeholder="Ex: 50.480" oninput="calcPreview()">
+                <div class="preview" id="prevAgConsumo"></div>
+              </div>
+              <div class="form-row">
+                <label>Tarifa (R$/m³)</label>
+                <input type="number" id="fAgTarifa" step="0.0001" min="0.0001" placeholder="Ex: 8.5000" oninput="calcPreview()">
+                <div class="preview" id="prevAgValor"></div>
+              </div>
+            </div>
+          </div>
+          <div class="total-preview">
+            <div><div class="tp-label">Total Repasse</div></div>
+            <div class="tp-value" id="prevTotal">R$ —</div>
+          </div>
+          <div class="obs-row">
+            <label>Observações (opcional)</label>
+            <textarea id="fObs" placeholder="Ex: Mês com consumo elevado por conta do calor..."></textarea>
+          </div>
+          <button class="btn-salvar" id="btnSalvar" onclick="confirmarLeitura()">Salvar Leitura</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: COMPARATIVO ───────────────────────── -->
+    <div id="tabComparativo" class="tab-pane">
+      <div class="comp-card">
+        <h3>Comparativo: Ciclos vs Consumo Real</h3>
+        <div class="mes-bar" style="margin-bottom:20px">
+          <label>Mês:</label>
+          <select id="mesComp" onchange="carregarComparativo()"></select>
+        </div>
+        <div class="loading" id="loadingComp" style="display:none">
+          <div class="spinner"></div><div>Carregando dados...</div>
+        </div>
+        <div id="compContent" style="display:none">
+          <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+            <div class="kpi"><div class="kpi-label">Lavagens</div><div class="kpi-value" id="compLav">—</div></div>
+            <div class="kpi"><div class="kpi-label">Secagens</div><div class="kpi-value" id="compSec">—</div></div>
+            <div class="kpi"><div class="kpi-label">Total Ciclos</div><div class="kpi-value" id="compTotalCiclos">—</div></div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="comp-table">
+              <thead><tr>
+                <th style="text-align:left">Indicador</th>
+                <th>Teórico (ciclos)</th>
+                <th>Real (medidor)</th>
+                <th>Diferença</th>
+                <th>% Desvio</th>
+              </tr></thead>
+              <tbody id="compBody"></tbody>
+            </table>
+          </div>
+          <div class="comp-note">
+            <strong>Referência teórica por ciclo:</strong>
+            Lavagem = 0,05 kWh + 0,037 m³ &nbsp;•&nbsp; Secagem = 1,85 kWh + 0 m³<br>
+            <em>Diferença positiva = consumo real acima do esperado pelos ciclos.</em>
+          </div>
+        </div>
+        <div id="compEmpty" style="display:none;text-align:center;padding:40px;color:var(--txt-med);font-size:14px">
+          Sem dados de ciclos ou leitura para este mês.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3>Confirmar Leitura</h3>
+    <p>Revise os dados antes de salvar.</p>
+    <p style="color:var(--rosa);font-size:12px;margin-top:2px">⚠ Esta ação não pode ser desfeita.</p>
+    <div class="modal-data" id="modalData"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="modal-confirm-btn" id="btnConfirm" onclick="salvarLeitura()">✓ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
 // ════════════════════════════════════════════════════════════════
 // CONFIGURAÇÃO
 // ════════════════════════════════════════════════════════════════
-// CONFIGURAÇÃO SUPABASE
-const SUPABASE_URL = 'https://bnzjmhtslfvkkwqmzcof.supabase.co';
+const SUPABASE_URL      = 'https://bnzjmhtslfvkkwqmzcof.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuemptaHRzbGZ2a2t3cW16Y29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjcwNTYsImV4cCI6MjA5MTUwMzA1Nn0.rB8dKFYP7WRzBdBO7p_NCdNeIdnMxn4zItrpgc_pb1Q';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const CONDOMINIOS = {
-  'NEXT SKY':   { id: 2610, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'NEXT_SKY',   senha: 'nextsky' },
-  'KZ PANAMBY': { id: 2611, repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'KZ_PANAMBY', senha: 'kzpanamby' },
-  'PAIQUERÊ':   { id: 2533, repasse: { Lavagem: 1.00, Secagem: 1.00 }, slug: 'PAIQUERE',   senha: 'paiquere' },
-  'PORTAL VP':  { id: 2371, repasse: { Lavagem: 3.00, Secagem: 2.00 }, slug: 'PORTAL_VP',  senha: 'portalvp' },
+  'NEXT SKY':   { id: 2610, tipo: 'ciclos',  repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'NEXT_SKY',   senha: 'nextsky' },
+  'KZ PANAMBY': { id: 2611, tipo: 'ciclos',  repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'KZ_PANAMBY', senha: 'kzpanamby' },
+  'PAIQUERÊ':   { id: 2533, tipo: 'ciclos',  repasse: { Lavagem: 1.00, Secagem: 1.00 }, slug: 'PAIQUERE',   senha: 'paiquere' },
+  'PORTAL VP':  { id: 2371, tipo: 'ciclos',  repasse: { Lavagem: 3.00, Secagem: 2.00 }, slug: 'PORTAL_VP',  senha: 'portalvp' },
+  'CRIAÇÃO':    { id: 2614, tipo: 'consumo', slug: 'CRIACAO',   senha: 'criacao' },
+  'VIA ROVAI':  { id: 2946, tipo: 'consumo', slug: 'VIA_ROVAI', senha: 'viarovai' },
 };
 
-// ════════════════════════════════════════════════════════════════
-// ESTADO
-// ════════════════════════════════════════════════════════════════
-let currentCondo = null;
-let currentCfg   = null;
-let currentTxs   = [];
-let currentMes   = null;
-let chartInstance = null;
-let historicoCache = {}; // { "2026-03": { lavCnt, secCnt, total, txs } }
+// Consumo por ciclo (referência técnica)
+const KWH_LAV = 0.05, KWH_SEC = 1.85, M3_LAV = 0.037, M3_SEC = 0;
 
 // ════════════════════════════════════════════════════════════════
-// HE\PERS
+// ESTADO GLOBAL
 // ════════════════════════════════════════════════════════════════
-const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-const pad = n => String(n).padStart(2, '0');
+let currentCondo = null, currentCfg = null;
+let currentTxs = [], currentMes = null;
+let chartInstance = null, chartConsumoInstance = null;
+let historicoCache = {}, leiturasCache = null, pendingLeitura = null;
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+const brl  = v => 'R$ ' + Math.abs(v).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const brlS = v => (v < 0 ? '-' : '+') + brl(v); // signed R$
+const pad  = n => String(n).padStart(2, '0');
 const NOMES_MES       = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const NOMES_MES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const mesLabel   = (a, m) => `${NOMES_MES_CURTO[m-1]}/${String(a).slice(2)}`;
+const mesDisplay = key  => { const [a,m] = key.split('-').map(Number); return `${NOMES_MES[m-1]} ${a}`; };
+const calcVenc   = (a, m) => { const d = new Date(a, m+1, 5); return `05/${pad(d.getMonth()+1)}/${d.getFullYear()}`; };
+const normalize  = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().trim();
 
-function mesLabel(ano, mes) { return `${NOMES_MES_CURTO[mes-1]}/${String(ano).slice(2)}`; }
-
-function calcVencimento(ano, mes) {
-  const d = new Date(ano, mes + 1, 5);
-  return `05/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
 }
 
-function normalize(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); }
-
 // ════════════════════════════════════════════════════════════════
-// LOGIN
+// LOGIN / LOGOUT
 // ════════════════════════════════════════════════════════════════
 function doLogin() {
   const raw   = document.getElementById('loginCondo').value.trim();
@@ -258,44 +482,49 @@ function doLogin() {
 
   if (!raw) { err.textContent = 'Digite o nome do condomínio.'; err.style.display = 'block'; return; }
 
-  const inputNorm = normalize(raw);
-  const nome = Object.keys(CONDOMINIOS).find(k => normalize(k) === inputNorm);
-
+  const nome = Object.keys(CONDOMINIOS).find(k => normalize(k) === normalize(raw));
   if (!nome) { err.textContent = 'Condomínio não encontrado. Verifique o nome.'; err.style.display = 'block'; return; }
 
   const cfg = CONDOMINIOS[nome];
   if (senha !== cfg.senha) { err.textContent = 'Senha incorreta. Tente novamente.'; err.style.display = 'block'; return; }
 
   err.style.display = 'none';
-  currentCondo = nome;
-  currentCfg   = cfg;
-  historicoCache = {};
+  currentCondo = nome; currentCfg = cfg;
+  historicoCache = {}; leiturasCache = null;
 
   document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('topCondoName').textContent = nome;
-  populateMeses();
-  carregarMes();
+
+  if (cfg.tipo === 'consumo') {
+    document.getElementById('topCondoNameC').textContent = nome;
+    document.getElementById('appConsumo').style.display  = 'block';
+    populateMesesConsumo();
+    showTab('relatorio');
+  } else {
+    document.getElementById('topCondoName').textContent = nome;
+    document.getElementById('app').style.display        = 'block';
+    populateMeses();
+    carregarMes();
+  }
 }
 
-// Enter to login
 document.getElementById('loginSenha').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('loginCondo').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 function doLogout() {
-  currentCondo = null;
-  currentCfg   = null;
-  currentTxs   = [];
-  historicoCache = {};
-  document.getElementById('app').style.display = 'none';
+  currentCondo = null; currentCfg = null; currentTxs = [];
+  historicoCache = {}; leiturasCache = null; pendingLeitura = null;
+  document.getElementById('app').style.display        = 'none';
+  document.getElementById('appConsumo').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginSenha').value = '';
   document.getElementById('loginCondo').value = '';
   document.getElementById('loginErr').style.display = 'none';
+  if (chartInstance)        { chartInstance.destroy();        chartInstance = null; }
+  if (chartConsumoInstance) { chartConsumoInstance.destroy(); chartConsumoInstance = null; }
 }
 
 // ════════════════════════════════════════════════════════════════
-// MES SELECTOR
+// MES SELECTORS
 // ════════════════════════════════════════════════════════════════
 function populateMeses() {
   const sel = document.getElementById('mesSel');
@@ -303,72 +532,88 @@ function populateMeses() {
   const now = new Date();
   for (let i = 0; i < 12; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const val   = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
-    const label = `${NOMES_MES[d.getMonth()]} ${d.getFullYear()}`;
-    const opt   = document.createElement('option');
-    opt.value       = val;
-    opt.textContent = label;
+    const opt = document.createElement('option');
+    opt.value       = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+    opt.textContent = `${NOMES_MES[d.getMonth()]} ${d.getFullYear()}`;
     sel.appendChild(opt);
   }
 }
 
+function populateMesesConsumo() {
+  const now = new Date();
+  ['mesLancar','mesComp'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    for (let i = 0; i < 24; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const opt = document.createElement('option');
+      opt.value       = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+      opt.textContent = `${NOMES_MES[d.getMonth()]} ${d.getFullYear()}`;
+      sel.appendChild(opt);
+    }
+  });
+}
+
 // ════════════════════════════════════════════════════════════════
-// API
+// SUPABASE — VENDAS
 // ════════════════════════════════════════════════════════════════
-async function buscarVendas(idLavanderia, dataInicio, dataTermino) {
+async function buscarVendas(idLav, ini, fim) {
   const { data, error } = await sb
     .from('vendas')
     .select('data, vendas_itens(tipo_servico, valor, valor_sem_desconto)')
-    .eq('id_lavanderia', idLavanderia)
-    .eq('status', 'SUCESSO')
-    .gte('data', dataInicio)
-    .lte('data', dataTermino)
-    .order('data', { ascending: false });
-  if (error) throw new Error('Erro Supabase: ' + error.message);
+    .eq('id_lavanderia', idLav).eq('status','SUCESSO')
+    .gte('data', ini).lte('data', fim)
+    .order('data', { ascending: false })
+    .limit(5000); // evita limite padrão do Supabase
+  if (error) throw new Error('Supabase vendas: ' + error.message);
   return data || [];
+}
+
+// Retorna range UTC correto para um mês em horário de Brasília (UTC-3)
+// Evita divergências de ±3h nas bordas do mês
+function mesRangeBR(mesStr) {
+  const [ano, m] = mesStr.split('-').map(Number);
+  const ini = `${mesStr}-01T03:00:00Z`; // 00:00 Brasília = 03:00 UTC
+  const nextAno  = m === 12 ? ano + 1 : ano;
+  const nextMes  = m === 12 ? 1 : m + 1;
+  const nextStr  = `${nextAno}-${String(nextMes).padStart(2,'0')}`;
+  const fim = `${nextStr}-01T02:59:59Z`; // 23:59:59 Brasília = próx. dia 02:59:59 UTC
+  return { ini, fim };
 }
 
 function processarVendas(vendas) {
   const txs = [];
-  for (const v of vendas) {
-    const data = v.data.replace('T', ' ').substring(0, 16);
-    for (const item of (v.vendas_itens || [])) {
+  for (const v of vendas)
+    for (const item of (v.vendas_itens || []))
       txs.push({
-        data,
+        data: v.data.replace('T',' ').substring(0,16),
         tipo: item.tipo_servico === 'LAVAGEM' ? 'Lavagem' : 'Secagem',
         valor: parseFloat(item.valor),
         valorSemDesconto: parseFloat(item.valor_sem_desconto ?? item.valor),
       });
-    }
-  }
-  return txs.sort((a, b) => b.data.localeCompare(a.data));
+  return txs.sort((a,b) => b.data.localeCompare(a.data));
 }
 
 // ════════════════════════════════════════════════════════════════
-// CARREGAR MÊS
+// CARREGAR MÊS — CICLOS
 // ════════════════════════════════════════════════════════════════
 async function carregarMes() {
   const mes = document.getElementById('mesSel').value;
   if (!mes) return;
   currentMes = mes;
   const [ano, m] = mes.split('-').map(Number);
-  const ultimoDia = new Date(ano, m, 0).getDate();
+  const ult = new Date(ano, m, 0).getDate();
 
-  document.getElementById('loading').style.display = 'block';
+  document.getElementById('loading').style.display    = 'block';
   document.getElementById('dashContent').style.display = 'none';
 
   try {
-    let dados;
-    if (historicoCache[mes]) {
-      dados = historicoCache[mes];
-    } else {
-      const dataInicio  = `${mes}-01T00:00:00Z`;
-      const dataTermino = `${mes}-${pad(ultimoDia)}T23:59:59Z`;
-      const vendas = await buscarVendas(currentCfg.id, dataInicio, dataTermino);
+    let dados = historicoCache[mes];
+    if (!dados) {
+      const { ini: ini1, fim: fim1 } = mesRangeBR(mes);
+      const vendas = await buscarVendas(currentCfg.id, ini1, fim1);
       const txs    = processarVendas(vendas);
-      const lavCnt = txs.filter(t => t.tipo === 'Lavagem').length;
-      const secCnt = txs.filter(t => t.tipo === 'Secagem').length;
-      dados = { lavCnt, secCnt, txs };
+      dados = { lavCnt: txs.filter(t=>t.tipo==='Lavagem').length, secCnt: txs.filter(t=>t.tipo==='Secagem').length, txs };
       historicoCache[mes] = dados;
     }
 
@@ -376,238 +621,448 @@ async function carregarMes() {
     const { lavCnt, secCnt } = dados;
     const total = lavCnt * currentCfg.repasse.Lavagem + secCnt * currentCfg.repasse.Secagem;
 
-    // KPIs
     document.getElementById('kpiCiclos').textContent    = lavCnt + secCnt;
     document.getElementById('kpiCiclosSub').textContent  = `${lavCnt} lavagens + ${secCnt} secagens`;
     document.getElementById('kpiRepasse').textContent    = brl(total);
-    document.getElementById('kpiRepasseSub').textContent = `Vencimento: ${calcVencimento(ano, m)}`;
+    document.getElementById('kpiRepasseSub').textContent = `Vencimento: ${calcVenc(ano, m)}`;
     document.getElementById('kpiLav').textContent        = lavCnt;
     document.getElementById('kpiSec').textContent        = secCnt;
+    document.getElementById('infoPeriodo').textContent   = `01/${pad(m)}/${ano} a ${pad(ult)}/${pad(m)}/${ano}`;
+    document.getElementById('infoVenc').textContent      = calcVenc(ano, m);
 
-    // Período + Vencimento
-    document.getElementById('infoPeriodo').textContent = `01/${pad(m)}/${ano} a ${pad(ultimoDia)}/${pad(m)}/${ano}`;
-    document.getElementById('infoVenc').textContent    = calcVencimento(ano, m);
-
-    // Resumo table
-    const rBody = document.getElementById('resumoBody');
-    const rFoot = document.getElementById('resumoFoot');
-    rBody.innerHTML = '';
-    rFoot.innerHTML = '';
-    for (const [tipo, cnt] of [['Lavagem', lavCnt], ['Secagem', secCnt]]) {
+    // Resumo
+    const rBody = document.getElementById('resumoBody'), rFoot = document.getElementById('resumoFoot');
+    rBody.innerHTML = ''; rFoot.innerHTML = '';
+    for (const [tipo, cnt] of [['Lavagem',lavCnt],['Secagem',secCnt]]) {
       if (!cnt) continue;
       const rep = currentCfg.repasse[tipo];
-      rBody.innerHTML += `<tr><td style="font-weight:600">${tipo}</td><td>${cnt}</td><td style="text-align:right">${brl(rep)}</td><td style="text-align:right;font-weight:700">${brl(cnt * rep)}</td></tr>`;
+      rBody.innerHTML += `<tr><td style="font-weight:600">${tipo}</td><td>${cnt}</td><td style="text-align:right">${brl(rep)}</td><td style="text-align:right;font-weight:700">${brl(cnt*rep)}</td></tr>`;
     }
     rFoot.innerHTML = `<tr style="background:var(--verde);color:#fff;font-weight:700"><td>TOTAL</td><td>${lavCnt+secCnt}</td><td></td><td style="text-align:right;font-size:15px">${brl(total)}</td></tr>`;
 
-    // Transações table
+    // Transações
     const txBody = document.getElementById('txBody');
     txBody.innerHTML = '';
     for (const t of currentTxs) {
-      const tipoCls = t.tipo === 'Lavagem' ? 'lav' : 'sec';
-      const temDesc = t.valorSemDesconto !== t.valor;
-      txBody.innerHTML += `<tr><td>${t.data}</td><td class="${tipoCls}">${t.tipo}</td><td>${brl(t.valorSemDesconto)}</td><td${temDesc?' class="desc"':''}>${brl(t.valor)}</td></tr>`;
+      const td = t.valorSemDesconto !== t.valor;
+      txBody.innerHTML += `<tr><td>${t.data}</td><td class="${t.tipo==='Lavagem'?'lav':'sec'}">${t.tipo}</td><td style="text-align:right">${brl(t.valorSemDesconto)}</td><td style="text-align:right"${td?' class="desc"':''}>${brl(t.valor)}</td></tr>`;
     }
     document.getElementById('txFooter').textContent = `${currentTxs.length} transações no período`;
 
-    // Chart
-    await atualizarGrafico(ano, m);
+    await atualizarGraficoCiclos(ano, m);
 
     document.getElementById('loading').style.display    = 'none';
     document.getElementById('dashContent').style.display = 'block';
-  } catch (e) {
-    document.getElementById('loading').innerHTML = `<div style="color:var(--rosa);font-weight:600">Erro ao carregar dados: ${e.message}</div>`;
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `<div style="color:var(--rosa);font-weight:600">Erro: ${e.message}</div>`;
     console.error(e);
   }
 }
 
 // ════════════════════════════════════════════════════════════════
-// GRÁFICO
+// GRÁFICO — CICLOS
 // ════════════════════════════════════════════════════════════════
-async function atualizarGrafico(anoAtual, mesAtual) {
+async function atualizarGraficoCiclos(anoAtual, mesAtual) {
   const meses = [];
   for (let i = 5; i >= 0; i--) {
-    const d = new Date(anoAtual, mesAtual - 1 - i, 1);
-    meses.push({ ano: d.getFullYear(), mes: d.getMonth() + 1, key: `${d.getFullYear()}-${pad(d.getMonth()+1)}` });
+    const d = new Date(anoAtual, mesAtual-1-i, 1);
+    meses.push({ ano: d.getFullYear(), mes: d.getMonth()+1, key: `${d.getFullYear()}-${pad(d.getMonth()+1)}` });
   }
-
   const histData = [];
   for (const m of meses) {
-    if (historicoCache[m.key]) {
-      histData.push({ label: mesLabel(m.ano, m.mes), lavagem: historicoCache[m.key].lavCnt, secagem: historicoCache[m.key].secCnt });
-    } else {
+    let lav = 0, sec = 0;
+    if (historicoCache[m.key]) { lav = historicoCache[m.key].lavCnt; sec = historicoCache[m.key].secCnt; }
+    else {
       try {
-        const ultimoDia = new Date(m.ano, m.mes, 0).getDate();
-        const vendas = await buscarVendas(currentCfg.id, `${m.key}-01T00:00:00Z`, `${m.key}-${pad(ultimoDia)}T23:59:59Z`);
+        const { ini: iniG, fim: fimG } = mesRangeBR(m.key);
+        const vendas = await buscarVendas(currentCfg.id, iniG, fimG);
         const txs    = processarVendas(vendas);
-        const lavCnt = txs.filter(t => t.tipo === 'Lavagem').length;
-        const secCnt = txs.filter(t => t.tipo === 'Secagem').length;
-        historicoCache[m.key] = { lavCnt, secCnt, txs };
-        histData.push({ label: mesLabel(m.ano, m.mes), lavagem: lavCnt, secagem: secCnt });
-      } catch (e) {
-        histData.push({ label: mesLabel(m.ano, m.mes), lavagem: 0, secagem: 0 });
-      }
+        lav = txs.filter(t=>t.tipo==='Lavagem').length;
+        sec = txs.filter(t=>t.tipo==='Secagem').length;
+        historicoCache[m.key] = { lavCnt: lav, secCnt: sec, txs };
+      } catch(e) {}
     }
+    histData.push({ label: mesLabel(m.ano, m.mes), lav, sec });
   }
 
   if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-
-  const canvas  = document.getElementById('chartCanvas');
-  const lavData = histData.map(h => h.lavagem);
-  const secData = histData.map(h => h.secagem);
-
-  chartInstance = new Chart(canvas, {
+  const lavD = histData.map(h=>h.lav), secD = histData.map(h=>h.sec);
+  chartInstance = new Chart(document.getElementById('chartCanvas'), {
     type: 'bar',
-    data: {
-      labels: histData.map(h => h.label),
-      datasets: [
-        { label: 'Lavagem', data: lavData, backgroundColor: lavData.map((_, i) => i === lavData.length-1 ? '#0a7a6a' : '#0ea18e'), borderRadius: 4 },
-        { label: 'Secagem', data: secData, backgroundColor: secData.map((_, i) => i === secData.length-1 ? '#c94060' : '#eb6680'), borderRadius: 4 },
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true, animation: { duration: 400 },
-      plugins: { legend: { labels: { color: '#4a6460', font: { size: 13, weight: '600' }, padding: 20 } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: '#4a6460', font: { weight: '600' } } },
-        y: { grid: { color: '#e0f0ef' }, ticks: { color: '#4a6460' }, beginAtZero: true },
-      },
-    },
-    plugins: [{
-      id: 'datalabels',
-      afterDatasetsDraw(chart) {
-        const ctx = chart.ctx;
-        ctx.font = 'bold 11px -apple-system, sans-serif';
-        ctx.fillStyle = '#1a2e2b';
-        ctx.textAlign = 'center';
-        chart.data.datasets.forEach((ds, di) => {
-          chart.getDatasetMeta(di).data.forEach((bar, i) => {
-            if (ds.data[i]) ctx.fillText(ds.data[i], bar.x, bar.y - 6);
-          });
-        });
-      }
-    }]
+    data: { labels: histData.map(h=>h.label), datasets: [
+      { label:'Lavagem', data:lavD, backgroundColor:lavD.map((_,i)=>i===lavD.length-1?'#0a7a6a':'#0ea18e'), borderRadius:4 },
+      { label:'Secagem', data:secD, backgroundColor:secD.map((_,i)=>i===secD.length-1?'#c94060':'#eb6680'), borderRadius:4 },
+    ]},
+    options: { responsive:true, maintainAspectRatio:true, animation:{duration:400},
+      plugins:{ legend:{ labels:{ color:'#4a6460', font:{ size:13, weight:'600' }, padding:20 } } },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#4a6460',font:{weight:'600'}} },
+               y:{ grid:{color:'#e0f0ef'}, ticks:{color:'#4a6460'}, beginAtZero:true } } },
+    plugins:[{ id:'dl', afterDatasetsDraw(chart) {
+      const ctx = chart.ctx; ctx.font='bold 11px sans-serif'; ctx.fillStyle='#1a2e2b'; ctx.textAlign='center';
+      chart.data.datasets.forEach((ds,di) => chart.getDatasetMeta(di).data.forEach((bar,i) => { if(ds.data[i]) ctx.fillText(ds.data[i], bar.x, bar.y-6); }));
+    }}]
   });
 }
 
 // ════════════════════════════════════════════════════════════════
-// PDF GENERATION
+// CONSUMO — TABS
+// ════════════════════════════════════════════════════════════════
+function showTab(tab) {
+  ['relatorio','lancar','comparativo'].forEach(t => {
+    document.getElementById('tb' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t===tab);
+    document.getElementById('tab'+ t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t===tab);
+  });
+  if (tab==='relatorio')   carregarRelatorio();
+  if (tab==='lancar')      inicializarLancar();
+  if (tab==='comparativo') carregarComparativo();
+}
+
+// ════════════════════════════════════════════════════════════════
+// CONSUMO — RELATÓRIO
+// ════════════════════════════════════════════════════════════════
+async function carregarRelatorio() {
+  // Use cache if available (invalidated on new save)
+  if (leiturasCache) { renderRelatorio(leiturasCache); return; }
+
+  document.getElementById('loadingRel').style.display = 'block';
+  document.getElementById('relContent').style.display = 'none';
+  document.getElementById('relEmpty').style.display   = 'none';
+
+  try {
+    const { data, error } = await sb.from('leituras_consumo').select('*')
+      .eq('id_lavanderia', currentCfg.id).order('mes_referencia', { ascending:false });
+    if (error) throw new Error(error.message);
+    leiturasCache = data || [];
+    document.getElementById('loadingRel').style.display = 'none';
+    renderRelatorio(leiturasCache);
+  } catch(e) {
+    document.getElementById('loadingRel').innerHTML = `<div style="color:var(--rosa);font-weight:600">Erro: ${e.message}</div>`;
+  }
+}
+
+function renderRelatorio(leituras) {
+  if (!leituras.length) {
+    document.getElementById('relEmpty').style.display   = 'block';
+    document.getElementById('relContent').style.display = 'none';
+    return;
+  }
+
+  const u = leituras[0]; // última leitura
+  document.getElementById('kpiEnergia').textContent      = parseFloat(u.energia_consumo).toFixed(1) + ' kWh';
+  document.getElementById('kpiEnergiaSub').textContent   = mesDisplay(u.mes_referencia);
+  document.getElementById('kpiValorEnergia').textContent = brl(parseFloat(u.valor_energia));
+  document.getElementById('kpiAgua').textContent         = parseFloat(u.agua_consumo).toFixed(3) + ' m³';
+  document.getElementById('kpiAguaSub').textContent      = mesDisplay(u.mes_referencia);
+  document.getElementById('kpiValorAgua').textContent    = brl(parseFloat(u.valor_agua));
+  document.getElementById('kpiTotalConsumo').textContent = brl(parseFloat(u.valor_total));
+  document.getElementById('kpiTotalSub').textContent     = mesDisplay(u.mes_referencia);
+
+  // Tabela histórico
+  const tbody = document.getElementById('leiturasBody');
+  tbody.innerHTML = '';
+  for (const l of leituras) {
+    tbody.innerHTML += `<tr>
+      <td><strong>${mesDisplay(l.mes_referencia)}</strong></td>
+      <td style="text-align:right">${parseFloat(l.energia_consumo).toFixed(1)}</td>
+      <td style="text-align:right">R$&nbsp;${parseFloat(l.energia_tarifa).toFixed(4).replace('.',',')}</td>
+      <td style="text-align:right;color:var(--rosa);font-weight:600">${brl(parseFloat(l.valor_energia))}</td>
+      <td style="text-align:right">${parseFloat(l.agua_consumo).toFixed(3)}</td>
+      <td style="text-align:right">R$&nbsp;${parseFloat(l.agua_tarifa).toFixed(4).replace('.',',')}</td>
+      <td style="text-align:right;color:var(--rosa);font-weight:600">${brl(parseFloat(l.valor_agua))}</td>
+      <td style="text-align:right;font-weight:700;color:var(--verde)">${brl(parseFloat(l.valor_total))}</td>
+    </tr>`;
+  }
+
+  // Gráfico (ordem cronológica)
+  const sorted = [...leituras].reverse();
+  atualizarGraficoConsumo(sorted);
+
+  document.getElementById('relContent').style.display = 'block';
+}
+
+function atualizarGraficoConsumo(leituras) {
+  if (chartConsumoInstance) { chartConsumoInstance.destroy(); chartConsumoInstance = null; }
+  const labels = leituras.map(l => { const [a,m] = l.mes_referencia.split('-').map(Number); return mesLabel(a,m); });
+  const enData = leituras.map(l => parseFloat(l.energia_consumo));
+  const agData = leituras.map(l => parseFloat(l.agua_consumo));
+
+  chartConsumoInstance = new Chart(document.getElementById('chartConsumoCan'), {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label:'Energia (kWh)', data:enData, backgroundColor:'#0ea18e', borderRadius:4, yAxisID:'y' },
+      { label:'Água (m³)',     data:agData, backgroundColor:'#b3dcdc', borderRadius:4, yAxisID:'y2' },
+    ]},
+    options: { responsive:true, maintainAspectRatio:true, animation:{duration:400},
+      plugins:{ legend:{ labels:{ color:'#4a6460', font:{size:12,weight:'600'}, padding:16 } } },
+      scales:{
+        x:  { grid:{display:false}, ticks:{color:'#4a6460',font:{weight:'600'}} },
+        y:  { grid:{color:'#e0f0ef'}, ticks:{color:'#0a7a6a'}, beginAtZero:true, position:'left',  title:{display:true,text:'kWh',color:'#0a7a6a'} },
+        y2: { grid:{display:false},  ticks:{color:'#4a8888'}, beginAtZero:true, position:'right', title:{display:true,text:'m³', color:'#4a8888'} },
+      }},
+    plugins:[{ id:'dl2', afterDatasetsDraw(chart) {
+      const ctx = chart.ctx; ctx.textAlign='center'; ctx.font='bold 10px sans-serif';
+      chart.data.datasets.forEach((ds,di) => {
+        ctx.fillStyle = di===0 ? '#0a7a6a' : '#2a6868';
+        chart.getDatasetMeta(di).data.forEach((bar,i) => { if(ds.data[i]) ctx.fillText(ds.data[i].toFixed(1), bar.x, bar.y-5); });
+      });
+    }}]
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+// CONSUMO — LANÇAR LEITURA
+// ════════════════════════════════════════════════════════════════
+function inicializarLancar() { onMesLancarChange(); }
+
+async function onMesLancarChange() {
+  const mes = document.getElementById('mesLancar').value;
+  document.getElementById('alreadyExists').style.display = 'none';
+  document.getElementById('formLancar').style.display    = 'block';
+
+  // Verifica se já existe leitura para este mês
+  const { data: existing } = await sb.from('leituras_consumo').select('id')
+    .eq('id_lavanderia', currentCfg.id).eq('mes_referencia', mes).maybeSingle();
+
+  if (existing) {
+    document.getElementById('alreadyExists').style.display = 'block';
+    document.getElementById('formLancar').style.display    = 'none';
+    return;
+  }
+
+  // Auto-preenche a partir da última leitura
+  const { data: last } = await sb.from('leituras_consumo').select('energia_atual, agua_atual, energia_tarifa, agua_tarifa')
+    .eq('id_lavanderia', currentCfg.id).order('mes_referencia', { ascending:false }).limit(1).maybeSingle();
+
+  if (last) {
+    document.getElementById('fEnAnt').value    = parseFloat(last.energia_atual).toFixed(2);
+    document.getElementById('fAgAnt').value    = parseFloat(last.agua_atual).toFixed(3);
+    document.getElementById('fEnTarifa').value = parseFloat(last.energia_tarifa).toFixed(4);
+    document.getElementById('fAgTarifa').value = parseFloat(last.agua_tarifa).toFixed(4);
+  } else {
+    ['fEnAnt','fAgAnt','fEnTarifa','fAgTarifa'].forEach(id => document.getElementById(id).value = '');
+  }
+  ['fEnAtual','fAgAtual','fObs'].forEach(id => document.getElementById(id).value = '');
+  calcPreview();
+}
+
+function calcPreview() {
+  const fv = id => parseFloat(document.getElementById(id).value) || 0;
+  const enAnt = fv('fEnAnt'), enAtual = fv('fEnAtual'), enTarifa = fv('fEnTarifa');
+  const agAnt = fv('fAgAnt'), agAtual = fv('fAgAtual'), agTarifa = fv('fAgTarifa');
+  const enC = enAtual - enAnt, agC = agAtual - agAnt;
+  const valEn = enC * enTarifa, valAg = agC * agTarifa;
+
+  function setPreview(cId, vId, consumo, valor, unit, hasAtual) {
+    const pc = document.getElementById(cId), pv = document.getElementById(vId);
+    if (!hasAtual) { pc.textContent=''; pv.textContent=''; return; }
+    if (consumo < 0) { pc.className='preview err'; pc.textContent=`⚠ Leitura atual menor que anterior!`; pv.textContent=''; }
+    else { pc.className='preview'; pc.textContent=`Consumo: ${consumo.toFixed(unit==='kWh'?2:3)} ${unit}`; pv.textContent = valor>0 ? `Valor: ${brl(valor)}` : ''; }
+  }
+
+  setPreview('prevEnConsumo','prevEnValor', enC, valEn, 'kWh', !!document.getElementById('fEnAtual').value);
+  setPreview('prevAgConsumo','prevAgValor', agC, valAg, 'm³',  !!document.getElementById('fAgAtual').value);
+
+  const allFilled = enAnt||enAnt===0, atualFilled = enAtual&&agAtual, tarifaFilled = enTarifa&&agTarifa;
+  const valid = enC>=0 && agC>=0;
+  document.getElementById('prevTotal').textContent =
+    (atualFilled && tarifaFilled && valid) ? brl(valEn + valAg) : 'R$ —';
+}
+
+function confirmarLeitura() {
+  const fv = id => { const v = document.getElementById(id).value; return v === '' ? null : parseFloat(v); };
+  const mes = document.getElementById('mesLancar').value;
+  const enAnt=fv('fEnAnt'), enAtual=fv('fEnAtual'), enTarifa=fv('fEnTarifa');
+  const agAnt=fv('fAgAnt'), agAtual=fv('fAgAtual'), agTarifa=fv('fAgTarifa');
+  const obs = document.getElementById('fObs').value.trim();
+
+  if (enAnt===null)     { showToast('Preencha a leitura anterior de energia.'); return; }
+  if (enAtual===null)   { showToast('Preencha a leitura atual de energia.'); return; }
+  if (!enTarifa)        { showToast('Preencha a tarifa de energia.'); return; }
+  if (agAnt===null)     { showToast('Preencha a leitura anterior de água.'); return; }
+  if (agAtual===null)   { showToast('Preencha a leitura atual de água.'); return; }
+  if (!agTarifa)        { showToast('Preencha a tarifa de água.'); return; }
+  if (enAtual < enAnt)  { showToast('⚠ Energia atual não pode ser menor que anterior!'); return; }
+  if (agAtual < agAnt)  { showToast('⚠ Água atual não pode ser menor que anterior!'); return; }
+
+  const enC = enAtual - enAnt, agC = agAtual - agAnt;
+  const valEn = +(enC * enTarifa).toFixed(2), valAg = +(agC * agTarifa).toFixed(2);
+  const total = +(valEn + valAg).toFixed(2);
+
+  pendingLeitura = { mes, enAnt, enAtual, enTarifa, agAnt, agAtual, agTarifa, obs, enC, agC, valEn, valAg, total };
+
+  document.getElementById('modalData').innerHTML = `
+    <div>📅 <strong>Mês:</strong> ${mesDisplay(mes)}</div>
+    <div>⚡ <strong>Energia:</strong> ${enC.toFixed(2)} kWh × R$ ${enTarifa.toFixed(4).replace('.',',')} = <strong>${brl(valEn)}</strong></div>
+    <div>💧 <strong>Água:</strong> ${agC.toFixed(3)} m³ × R$ ${agTarifa.toFixed(4).replace('.',',')} = <strong>${brl(valAg)}</strong></div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--borda)">
+      💰 <strong>Total Repasse: ${brl(total)}</strong>
+    </div>`;
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function fecharModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+async function salvarLeitura() {
+  if (!pendingLeitura) return;
+  const btn = document.getElementById('btnConfirm');
+  btn.disabled=true; btn.textContent='Salvando...';
+
+  try {
+    const { error } = await sb.from('leituras_consumo').insert({
+      id_lavanderia:    currentCfg.id,
+      mes_referencia:   pendingLeitura.mes,
+      energia_anterior: pendingLeitura.enAnt,
+      energia_atual:    pendingLeitura.enAtual,
+      energia_tarifa:   pendingLeitura.enTarifa,
+      agua_anterior:    pendingLeitura.agAnt,
+      agua_atual:       pendingLeitura.agAtual,
+      agua_tarifa:      pendingLeitura.agTarifa,
+      observacoes:      pendingLeitura.obs || null,
+    });
+    if (error) throw new Error(error.message);
+
+    fecharModal();
+    leiturasCache = null; // força reload no relatório
+    showToast('✓ Leitura salva com sucesso!');
+    pendingLeitura = null;
+    document.getElementById('alreadyExists').style.display = 'block';
+    document.getElementById('formLancar').style.display    = 'none';
+  } catch(e) {
+    showToast('Erro ao salvar: ' + e.message);
+    console.error(e);
+  }
+  btn.disabled=false; btn.textContent='✓ Confirmar';
+}
+
+// ════════════════════════════════════════════════════════════════
+// CONSUMO — COMPARATIVO
+// ════════════════════════════════════════════════════════════════
+async function carregarComparativo() {
+  const mes = document.getElementById('mesComp').value;
+  document.getElementById('loadingComp').style.display = 'block';
+  document.getElementById('compContent').style.display = 'none';
+  document.getElementById('compEmpty').style.display   = 'none';
+
+  try {
+    const [ano, m] = mes.split('-').map(Number);
+    const ult = new Date(ano, m, 0).getDate();
+
+    const [vendas, { data: leitura }] = await Promise.all([
+      (() => { const { ini: iniC, fim: fimC } = mesRangeBR(mes); return buscarVendas(currentCfg.id, iniC, fimC); })(),
+      sb.from('leituras_consumo').select('*').eq('id_lavanderia', currentCfg.id).eq('mes_referencia', mes).maybeSingle()
+    ]);
+
+    const txs    = processarVendas(vendas);
+    const lavCnt = txs.filter(t=>t.tipo==='Lavagem').length;
+    const secCnt = txs.filter(t=>t.tipo==='Secagem').length;
+
+    if (!lavCnt && !secCnt && !leitura) {
+      document.getElementById('loadingComp').style.display = 'none';
+      document.getElementById('compEmpty').style.display   = 'block';
+      return;
+    }
+
+    document.getElementById('compLav').textContent        = lavCnt;
+    document.getElementById('compSec').textContent        = secCnt;
+    document.getElementById('compTotalCiclos').textContent = lavCnt + secCnt;
+
+    // Teórico
+    const teorEn = lavCnt * KWH_LAV + secCnt * KWH_SEC;
+    const teorAg = lavCnt * M3_LAV  + secCnt * M3_SEC;
+    const realEn = leitura ? parseFloat(leitura.energia_consumo) : null;
+    const realAg = leitura ? parseFloat(leitura.agua_consumo)    : null;
+
+    function row(label, teorico, real, unit, decs) {
+      const semLeitura = real===null;
+      let diffTd = '<td colspan="2" style="color:var(--txt-med);font-style:italic;text-align:center">Sem leitura</td>';
+      if (!semLeitura) {
+        const diff = real - teorico;
+        const pct  = teorico > 0 ? diff/teorico*100 : 0;
+        const cls  = Math.abs(diff)<0.001 ? 'diff-zero' : diff>0 ? 'diff-pos' : 'diff-neg';
+        const signDiff = diff>=0 ? '+' : '';
+        diffTd = `<td class="${cls}">${signDiff}${diff.toFixed(decs)} ${unit}</td><td class="${cls}">${signDiff}${pct.toFixed(1)}%</td>`;
+      }
+      return `<tr>
+        <td>${label}</td>
+        <td>${teorico.toFixed(decs)} ${unit}</td>
+        <td>${real!==null ? real.toFixed(decs)+' '+unit : '—'}</td>
+        ${diffTd}
+      </tr>`;
+    }
+
+    let html = row('⚡ Energia', teorEn, realEn, 'kWh', 2)
+             + row('💧 Água',    teorAg, realAg, 'm³',  3);
+
+    if (leitura) {
+      const tarEn = parseFloat(leitura.energia_tarifa), tarAg = parseFloat(leitura.agua_tarifa);
+      const teorTotal = teorEn*tarEn + teorAg*tarAg;
+      const realTotal = parseFloat(leitura.valor_total);
+      const diff = realTotal - teorTotal;
+      const pct  = teorTotal>0 ? diff/teorTotal*100 : 0;
+      const cls  = Math.abs(diff)<0.01 ? 'diff-zero' : diff>0 ? 'diff-pos' : 'diff-neg';
+      const sign = diff>=0 ? '+' : '';
+      html += `<tr style="background:var(--zebra);font-weight:700">
+        <td>💰 Valor Total</td>
+        <td>${brl(teorTotal)}</td>
+        <td>${brl(realTotal)}</td>
+        <td class="${cls}">${sign}${brl(Math.abs(diff)).replace('R$ ','')}</td>
+        <td class="${cls}">${sign}${pct.toFixed(1)}%</td>
+      </tr>`;
+    }
+
+    document.getElementById('compBody').innerHTML = html;
+    document.getElementById('loadingComp').style.display = 'none';
+    document.getElementById('compContent').style.display = 'block';
+  } catch(e) {
+    document.getElementById('loadingComp').innerHTML = `<div style="color:var(--rosa);font-weight:600">Erro: ${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// PDF — CICLOS
 // ════════════════════════════════════════════════════════════════
 async function baixarPDF() {
   const btn = document.getElementById('btnPdf');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ Gerando...';
-
+  btn.disabled=true; btn.innerHTML='⏳ Gerando...';
   try {
     const [ano, m] = currentMes.split('-').map(Number);
-    const ultimoDia = new Date(ano, m, 0).getDate();
-    const periodIni = `01/${pad(m)}/${ano}`;
-    const periodFim = `${pad(ultimoDia)}/${pad(m)}/${ano}`;
-    const vencimento = calcVencimento(ano, m);
-
-    const dados = historicoCache[currentMes];
-    const { lavCnt: lavCount, secCnt: secCount, txs } = dados;
-
+    const ult = new Date(ano, m, 0).getDate();
+    const pIni=`01/${pad(m)}/${ano}`, pFim=`${pad(ult)}/${pad(m)}/${ano}`, venc=calcVenc(ano,m);
+    const { lavCnt: lavCount, secCnt: secCount, txs } = historicoCache[currentMes];
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const W = 170, ML = 20;
-    let y = 20;
+    const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const W=170, ML=20; let y=20;
+    const VERDE=[14,161,142],VE=[10,122,106],ROSA=[235,102,128],CREME=[251,251,239];
+    const BORDA=[200,222,221],ZEBRA=[237,246,245],TE=[26,46,43],TM=[74,100,96],BR=[255,255,255];
 
-    const VERDE=[14,161,142],VERDE_ESC=[10,122,106],ROSA=[235,102,128],CREME=[251,251,239];
-    const BORDA=[200,222,221],ZEBRA=[237,246,245],TXT_ESC=[26,46,43],TXT_MED=[74,100,96],BRANCO=[255,255,255];
-
-    // Header
-    doc.setFillColor(...VERDE);
-    doc.roundedRect(ML,y,W,22,3,3,'F');
-    doc.setTextColor(...BRANCO);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(18);
-    doc.text('SOAP CLUB',ML+6,y+9);
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(8);
-    doc.text('Somos um clube, e também lavamos roupas',ML+6,y+15);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9);
-    doc.text('Relatório de Repasse',ML+W-4,y+8,{align:'right'});
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(8);
-    doc.text('Emitido em: '+new Date().toLocaleDateString('pt-BR'),ML+W-4,y+14,{align:'right'});
+    doc.setFillColor(...VERDE); doc.roundedRect(ML,y,W,22,3,3,'F');
+    doc.setTextColor(...BR); doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.text('SOAP CLUB',ML+6,y+9);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.text('Somos um clube, e também lavamos roupas',ML+6,y+15);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('Relatório de Repasse',ML+W-4,y+8,{align:'right'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.text('Emitido em: '+new Date().toLocaleDateString('pt-BR'),ML+W-4,y+14,{align:'right'});
     y+=28;
-
-    // Info block
-    const infoH = 20;
-    doc.setFillColor(...CREME);
-    doc.setDrawColor(...BORDA);
-    doc.roundedRect(ML,y,W,infoH,2,2,'FD');
-    doc.setTextColor(...VERDE);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(13);
-    doc.text(currentCondo,ML+5,y+8);
-    doc.setDrawColor(...BORDA);
-    doc.setLineWidth(0.3);
-    doc.line(ML,y+11,ML+W,y+11);
-    doc.setTextColor(...TXT_MED);
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(7);
-    doc.text('PERÍODO',ML+5,y+15);
-    doc.text('TOTAL DE CICLOS',ML+5+W/3,y+15);
-    doc.text('VENCIMENTO',ML+5+W*2/3,y+15);
-    doc.setTextColor(...TXT_ESC);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(8.5);
-    doc.text(periodIni+' — '+periodFim,ML+5,y+20);
-    doc.text(String(lavCount+secCount),ML+5+W/3,y+20);
-    doc.setTextColor(...ROSA);
-    doc.text(vencimento,ML+5+W*2/3,y+20);
-    y+=infoH+6;
-
-    // Resumo
-    doc.setTextColor(...VERDE);
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(10);
-    doc.text('Resumo de Repasse',ML,y);
-    y+=4;
-    let totalRep=0;
-    const resumoRows=[];
-    for(const [tipo,cnt] of [['Lavagem',lavCount],['Secagem',secCount]]){
-      if(!cnt)continue;
-      const rep=currentCfg.repasse[tipo],vt=cnt*rep;
-      totalRep+=vt;
-      resumoRows.push([tipo,cnt,brl(rep),brl(vt)]);
-    }
-    doc.autoTable({startY:y,head:[['SERVIÇO','CICLOS','REPASSE / CICLO','VALOR TOTAL']],body:resumoRows,foot:[['TOTAL',lavCount+secCount,'',brl(totalRep)]],margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8.5,halign:'center'},footStyles:{fillColor:VERDE_ESC,textColor:BRANCO,fontStyle:'bold',fontSize:10},bodyStyles:{textColor:TXT_ESC,fontSize:9.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',fontStyle:'bold'},1:{halign:'center'},2:{halign:'center'},3:{halign:'right',fontStyle:'bold'}},didParseCell(d){if(d.section==='foot'){if(d.column.index===0)d.cell.styles.halign='left';if(d.column.index===3)d.cell.styles.halign='right';}}});
+    doc.setFillColor(...CREME); doc.setDrawColor(...BORDA); doc.roundedRect(ML,y,W,20,2,2,'FD');
+    doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.text(currentCondo,ML+5,y+8);
+    doc.setLineWidth(0.3); doc.line(ML,y+11,ML+W,y+11);
+    doc.setTextColor(...TM); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text('PERÍODO',ML+5,y+15); doc.text('TOTAL DE CICLOS',ML+5+W/3,y+15); doc.text('VENCIMENTO',ML+5+W*2/3,y+15);
+    doc.setTextColor(...TE); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.text(pIni+' — '+pFim,ML+5,y+20); doc.text(String(lavCount+secCount),ML+5+W/3,y+20);
+    doc.setTextColor(...ROSA); doc.text(venc,ML+5+W*2/3,y+20); y+=26;
+    doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.text('Resumo de Repasse',ML,y); y+=4;
+    let totalRep=0; const rRows=[];
+    for(const [tipo,cnt] of [['Lavagem',lavCount],['Secagem',secCount]]){if(!cnt)continue;const rep=currentCfg.repasse[tipo],vt=cnt*rep;totalRep+=vt;rRows.push([tipo,cnt,brl(rep),brl(vt)]);}
+    doc.autoTable({startY:y,head:[['SERVIÇO','CICLOS','REPASSE/CICLO','VALOR TOTAL']],body:rRows,foot:[['TOTAL',lavCount+secCount,'',brl(totalRep)]],margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BR,fontStyle:'bold',fontSize:8.5,halign:'center'},footStyles:{fillColor:VE,textColor:BR,fontStyle:'bold',fontSize:10},bodyStyles:{textColor:TE,fontSize:9.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',fontStyle:'bold'},1:{halign:'center'},2:{halign:'center'},3:{halign:'right',fontStyle:'bold'}},didParseCell(d){if(d.section==='foot'){if(d.column.index===0)d.cell.styles.halign='left';if(d.column.index===3)d.cell.styles.halign='right';}}});
     y=doc.lastAutoTable.finalY+6;
-
-    // Chart image
-    const chartCanvas = document.getElementById('chartCanvas');
-    if (chartCanvas && chartInstance) {
-      const chartPng = chartCanvas.toDataURL('image/png');
-      doc.setFillColor(...CREME);
-      doc.setDrawColor(...BORDA);
-      doc.roundedRect(ML,y,W,62,2,2,'FD');
-      doc.setTextColor(...VERDE);
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(9.5);
-      doc.text('Tendência de Ciclos — Últimos 6 Meses',ML+5,y+7);
-      doc.addImage(chartPng,'PNG',ML+2,y+9,W-4,50);
-      y+=68;
-    }
-
-    // Transações
-    doc.setTextColor(...VERDE);doc.setFont('helvetica','bold');doc.setFontSize(10);
-    doc.text('Detalhamento de Transações',ML,y);y+=4;
-
-    doc.autoTable({startY:y,head:[['DATA / HORA','TIPO','VALOR S/ DESC.','VALOR COBRADO']],body:txs.map(t=>[t.data,t.tipo,brl(t.valorSemDesconto),brl(t.valor)]),margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BRANCO,fontStyle:'bold',fontSize:8,halign:'center'},bodyStyles:{textColor:TXT_ESC,fontSize:8.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',cellWidth:W*0.38},1:{halign:'center',cellWidth:W*0.18},2:{halign:'right',cellWidth:W*0.22,textColor:TXT_MED},3:{halign:'right',cellWidth:W*0.22,fontStyle:'bold'}},didParseCell(d){if(d.section==='body'&&d.column.index===1){d.cell.styles.textColor=d.cell.raw==='Lavagem'?VERDE:ROSA;d.cell.styles.fontStyle='bold';}if(d.section==='body'&&d.column.index===3){const r=txs[d.row.index];if(r&&r.valorSemDesconto!==r.valor)d.cell.styles.textColor=ROSA;}},didDrawPage(d){const pH=doc.internal.pageSize.height;doc.setDrawColor(...BORDA);doc.setLineWidth(0.3);doc.line(ML,pH-14,ML+W,pH-14);doc.setTextColor(...TXT_MED);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.text('SOAP CLUB Lavanderias | Gerado em '+new Date().toLocaleDateString('pt-BR')+' | Período: '+periodIni+' a '+periodFim,ML+W/2,pH-9,{align:'center'});doc.text('Página '+doc.internal.getCurrentPageInfo().pageNumber,ML+W,pH-9,{align:'right'});}});
-
-    const mesSlug = NOMES_MES_CURTO[m-1].toUpperCase() + ano;
-    doc.save(`RELATORIO_${currentCfg.slug}_${mesSlug}.pdf`);
-  } catch (e) {
-    alert('Erro ao gerar PDF: ' + e.message);
-    console.error(e);
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF`;
+    if(chartInstance){const png=document.getElementById('chartCanvas').toDataURL('image/png');doc.setFillColor(...CREME);doc.setDrawColor(...BORDA);doc.roundedRect(ML,y,W,62,2,2,'FD');doc.setTextColor(...VERDE);doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.text('Tendência de Ciclos — Últimos 6 Meses',ML+5,y+7);doc.addImage(png,'PNG',ML+2,y+9,W-4,50);y+=68;}
+    doc.setTextColor(...VERDE);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('Detalhamento de Transações',ML,y);y+=4;
+    doc.autoTable({startY:y,head:[['DATA / HORA','TIPO','VALOR S/ DESC.','VALOR COBRADO']],body:txs.map(t=>[t.data,t.tipo,brl(t.valorSemDesconto),brl(t.valor)]),margin:{left:ML,right:ML},tableWidth:W,headStyles:{fillColor:VERDE,textColor:BR,fontStyle:'bold',fontSize:8,halign:'center'},bodyStyles:{textColor:TE,fontSize:8.5},alternateRowStyles:{fillColor:ZEBRA},columnStyles:{0:{halign:'left',cellWidth:W*.38},1:{halign:'center',cellWidth:W*.18},2:{halign:'right',cellWidth:W*.22,textColor:TM},3:{halign:'right',cellWidth:W*.22,fontStyle:'bold'}},didParseCell(d){if(d.section==='body'&&d.column.index===1){d.cell.styles.textColor=d.cell.raw==='Lavagem'?VERDE:ROSA;d.cell.styles.fontStyle='bold';}if(d.section==='body'&&d.column.index===3){const r=txs[d.row.index];if(r&&r.valorSemDesconto!==r.valor)d.cell.styles.textColor=ROSA;}},didDrawPage(d){const pH=doc.internal.pageSize.height;doc.setDrawColor(...BORDA);doc.setLineWidth(0.3);doc.line(ML,pH-14,ML+W,pH-14);doc.setTextColor(...TM);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.text('SOAP CLUB Lavanderias | Gerado em '+new Date().toLocaleDateString('pt-BR')+' | Período: '+pIni+' a '+pFim,ML+W/2,pH-9,{align:'center'});doc.text('Página '+doc.internal.getCurrentPageInfo().pageNumber,ML+W,pH-9,{align:'right'});}});
+    doc.save(`RELATORIO_${currentCfg.slug}_${NOMES_MES_CURTO[m-1].toUpperCase()}${ano}.pdf`);
+  } catch(e) { alert('Erro ao gerar PDF: '+e.message); console.error(e); }
+  btn.disabled=false;
+  btn.innerHTML=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar PDF`;
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
