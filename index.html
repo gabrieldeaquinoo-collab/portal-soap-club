@@ -211,6 +211,8 @@ tbody td.desc{color:var(--rosa);font-weight:600}
         <div class="kpi"><div class="kpi-label">Valor de Repasse</div><div class="kpi-value rosa" id="kpiRepasse">—</div><div class="kpi-sub" id="kpiRepasseSub"></div></div>
         <div class="kpi"><div class="kpi-label">Lavagens</div><div class="kpi-value" id="kpiLav">—</div></div>
         <div class="kpi"><div class="kpi-label">Secagens</div><div class="kpi-value" id="kpiSec">—</div></div>
+        <div class="kpi" id="boxEnergiaM" style="display:none"><div class="kpi-label">Energia Elétrica</div><div class="kpi-value" id="kpiEnergiaM">—</div><div class="kpi-sub" id="kpiEnergiaMSub"></div></div>
+        <div class="kpi" id="boxValorEnergiaM" style="display:none"><div class="kpi-label">Valor Energia</div><div class="kpi-value rosa" id="kpiValorEnergiaM">—</div><div class="kpi-sub" id="kpiValorEnergiaMSub"></div></div>
       </div>
       <div class="chart-card">
         <h3>Tendência de Ciclos — Últimos 6 Meses</h3>
@@ -264,11 +266,11 @@ tbody td.desc{color:var(--rosa);font-weight:600}
       </div>
       <div id="relContent" style="display:none">
         <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
-          <div class="kpi"><div class="kpi-label">⚡ Consumo Energia</div><div class="kpi-value" id="kpiEnergia">—</div><div class="kpi-sub" id="kpiEnergiaSub"></div></div>
-          <div class="kpi"><div class="kpi-label">⚡ Valor Energia</div><div class="kpi-value rosa" id="kpiValorEnergia">—</div></div>
-          <div class="kpi"><div class="kpi-label">💧 Consumo Água</div><div class="kpi-value azul" id="kpiAgua">—</div><div class="kpi-sub" id="kpiAguaSub"></div></div>
-          <div class="kpi"><div class="kpi-label">💧 Valor Água</div><div class="kpi-value rosa" id="kpiValorAgua">—</div></div>
-          <div class="kpi"><div class="kpi-label">💰 Total Repasse</div><div class="kpi-value rosa" id="kpiTotalConsumo">—</div><div class="kpi-sub" id="kpiTotalSub"></div></div>
+          <div class="kpi"><div class="kpi-label">Consumo Energia</div><div class="kpi-value" id="kpiEnergia">—</div><div class="kpi-sub" id="kpiEnergiaSub"></div></div>
+          <div class="kpi"><div class="kpi-label">Valor Energia</div><div class="kpi-value rosa" id="kpiValorEnergia">—</div></div>
+          <div class="kpi"><div class="kpi-label">Consumo Água</div><div class="kpi-value azul" id="kpiAgua">—</div><div class="kpi-sub" id="kpiAguaSub"></div></div>
+          <div class="kpi"><div class="kpi-label">Valor Água</div><div class="kpi-value rosa" id="kpiValorAgua">—</div></div>
+          <div class="kpi"><div class="kpi-label">Total Repasse</div><div class="kpi-value rosa" id="kpiTotalConsumo">—</div><div class="kpi-sub" id="kpiTotalSub"></div></div>
         </div>
         <div class="chart-card">
           <h3>Histórico de Consumo</h3>
@@ -315,7 +317,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
           <div class="form-grid">
             <!-- ENERGIA -->
             <div class="form-section">
-              <h4>⚡ Energia</h4>
+              <h4>Energia</h4>
               <div class="form-row">
                 <label>Leitura Anterior (kWh)</label>
                 <input type="number" id="fEnAnt" step="0.01" min="0" placeholder="Ex: 1250.50" oninput="calcPreview()">
@@ -333,7 +335,7 @@ tbody td.desc{color:var(--rosa);font-weight:600}
             </div>
             <!-- ÁGUA -->
             <div class="form-section">
-              <h4>💧 Água</h4>
+              <h4>Água</h4>
               <div class="form-row">
                 <label>Leitura Anterior (m³)</label>
                 <input type="number" id="fAgAnt" step="0.001" min="0" placeholder="Ex: 45.000" oninput="calcPreview()">
@@ -432,14 +434,27 @@ const SUPABASE_URL      = 'https://bnzjmhtslfvkkwqmzcof.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuemptaHRzbGZ2a2t3cW16Y29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjcwNTYsImV4cCI6MjA5MTUwMzA1Nn0.rB8dKFYP7WRzBdBO7p_NCdNeIdnMxn4zItrpgc_pb1Q';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const CONDOMINIOS = {
-  'NEXT SKY':   { id: 2610, tipo: 'ciclos',  repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'NEXT_SKY',   senha: 'nextsky' },
-  'KZ PANAMBY': { id: 2611, tipo: 'ciclos',  repasse: { Lavagem: 0.75, Secagem: 0.75 }, slug: 'KZ_PANAMBY', senha: 'kzpanamby' },
-  'PAIQUERÊ':   { id: 2533, tipo: 'ciclos',  repasse: { Lavagem: 1.00, Secagem: 1.00 }, slug: 'PAIQUERE',   senha: 'paiquere' },
-  'PORTAL VP':  { id: 2371, tipo: 'ciclos',  repasse: { Lavagem: 3.00, Secagem: 2.00 }, slug: 'PORTAL_VP',  senha: 'portalvp' },
-  'CRIAÇÃO':    { id: 2614, tipo: 'consumo', slug: 'CRIACAO',   senha: 'criacao' },
-  'VIA ROVAI':  { id: 2946, tipo: 'consumo', slug: 'VIA_ROVAI', senha: 'viarovai' },
-};
+// Catálogo do banco (fonte única: repasse_config).
+// Unidade nova cadastrada lá aparece aqui sozinha — nada de editar este arquivo.
+let CONDOMINIOS = {};
+function _cfgDaLinha(c) {
+  return {
+    id: c.id_lavanderia,
+    tipo: c.tipo,
+    repasse: { Lavagem: Number(c.tarifa_lavagem || 0), Secagem: Number(c.tarifa_secagem || 0) },
+    tarifaAgua:    c.tarifa_agua    == null ? null : Number(c.tarifa_agua),
+    tarifaEnergia: c.tarifa_energia == null ? null : Number(c.tarifa_energia),
+    slug: c.slug || String(c.nome).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim().replace(/[^A-Z0-9]+/g,'_')
+  };
+}
+async function carregarCondominios() {
+  const { data, error } = await sb.from('portal_condominios').select('*');
+  if (error) { console.error('catalogo:', error.message); return; }
+  const novo = {};
+  (data || []).forEach(c => { novo[c.nome] = _cfgDaLinha(c); });
+  CONDOMINIOS = novo;
+}
+carregarCondominios();
 
 // Consumo por ciclo (referência técnica)
 const KWH_LAV = 0.05, KWH_SEC = 1.85, M3_LAV = 0.037, M3_SEC = 0;
@@ -475,18 +490,22 @@ function showToast(msg) {
 // ════════════════════════════════════════════════════════════════
 // LOGIN / LOGOUT
 // ════════════════════════════════════════════════════════════════
-function doLogin() {
+async function doLogin() {
   const raw   = document.getElementById('loginCondo').value.trim();
   const senha = document.getElementById('loginSenha').value.trim().toLowerCase();
   const err   = document.getElementById('loginErr');
 
   if (!raw) { err.textContent = 'Digite o nome do condomínio.'; err.style.display = 'block'; return; }
 
-  const nome = Object.keys(CONDOMINIOS).find(k => normalize(k) === normalize(raw));
-  if (!nome) { err.textContent = 'Condomínio não encontrado. Verifique o nome.'; err.style.display = 'block'; return; }
+  // validação no servidor: a senha não trafega mais numa lista dentro desta página
+  const { data, error } = await sb.rpc('portal_login', { p_login: raw, p_senha: senha });
+  if (error) { err.textContent = 'Não consegui verificar agora. Tente de novo.'; err.style.display = 'block'; return; }
+  if (!data || !data.length) { err.textContent = 'Condomínio ou senha incorretos.'; err.style.display = 'block'; return; }
 
-  const cfg = CONDOMINIOS[nome];
-  if (senha !== cfg.senha) { err.textContent = 'Senha incorreta. Tente novamente.'; err.style.display = 'block'; return; }
+  const c    = data[0];
+  const nome = c.nome;
+  const cfg  = _cfgDaLinha(c);
+  CONDOMINIOS[nome] = cfg;
 
   err.style.display = 'none';
   currentCondo = nome; currentCfg = cfg;
@@ -619,7 +638,32 @@ async function carregarMes() {
 
     currentTxs = dados.txs;
     const { lavCnt, secCnt } = dados;
-    const total = lavCnt * currentCfg.repasse.Lavagem + secCnt * currentCfg.repasse.Secagem;
+    const totalCiclos = lavCnt * currentCfg.repasse.Lavagem + secCnt * currentCfg.repasse.Secagem;
+
+    // tipo misto (ciclos + luz): busca a leitura do mes; sem leitura, mostra pendente
+    let energiaM = null;
+    const ehMisto = currentCfg.tipo === 'misto';
+    document.getElementById('boxEnergiaM').style.display      = ehMisto ? '' : 'none';
+    document.getElementById('boxValorEnergiaM').style.display = ehMisto ? '' : 'none';
+    if (ehMisto) {
+      const { data: leit } = await sb.from('leituras_consumo')
+        .select('energia_anterior, energia_atual')
+        .eq('id_lavanderia', currentCfg.id).eq('mes_referencia', mes).maybeSingle();
+      if (leit && currentCfg.tarifaEnergia != null) {
+        const kwh = Number(leit.energia_atual) - Number(leit.energia_anterior);
+        energiaM = { kwh, valor: kwh * currentCfg.tarifaEnergia };
+        document.getElementById('kpiEnergiaM').textContent       = kwh.toFixed(1) + ' kWh';
+        document.getElementById('kpiEnergiaMSub').textContent    = brl(currentCfg.tarifaEnergia) + ' / kWh';
+        document.getElementById('kpiValorEnergiaM').textContent  = brl(energiaM.valor);
+        document.getElementById('kpiValorEnergiaMSub').textContent = '';
+      } else {
+        document.getElementById('kpiEnergiaM').textContent       = '—';
+        document.getElementById('kpiEnergiaMSub').textContent    = 'Aguardando a leitura do mês';
+        document.getElementById('kpiValorEnergiaM').textContent  = '—';
+        document.getElementById('kpiValorEnergiaMSub').textContent = 'entra assim que a leitura for lançada';
+      }
+    }
+    const total = totalCiclos + (energiaM ? energiaM.valor : 0);
 
     document.getElementById('kpiCiclos').textContent    = lavCnt + secCnt;
     document.getElementById('kpiCiclosSub').textContent  = `${lavCnt} lavagens + ${secCnt} secagens`;
@@ -637,6 +681,11 @@ async function carregarMes() {
       if (!cnt) continue;
       const rep = currentCfg.repasse[tipo];
       rBody.innerHTML += `<tr><td style="font-weight:600">${tipo}</td><td>${cnt}</td><td style="text-align:right">${brl(rep)}</td><td style="text-align:right;font-weight:700">${brl(cnt*rep)}</td></tr>`;
+    }
+    if (ehMisto) {
+      rBody.innerHTML += energiaM
+        ? `<tr><td style="font-weight:600">Energia elétrica</td><td>${energiaM.kwh.toFixed(1)} kWh</td><td style="text-align:right">${brl(currentCfg.tarifaEnergia)}</td><td style="text-align:right;font-weight:700">${brl(energiaM.valor)}</td></tr>`
+        : `<tr><td style="font-weight:600">Energia elétrica</td><td colspan="2" style="color:var(--cinza)">aguardando a leitura do mês</td><td style="text-align:right">—</td></tr>`;
     }
     rFoot.innerHTML = `<tr style="background:var(--verde);color:#fff;font-weight:700"><td>TOTAL</td><td>${lavCnt+secCnt}</td><td></td><td style="text-align:right;font-size:15px">${brl(total)}</td></tr>`;
 
@@ -892,10 +941,10 @@ function confirmarLeitura() {
 
   document.getElementById('modalData').innerHTML = `
     <div>📅 <strong>Mês:</strong> ${mesDisplay(mes)}</div>
-    <div>⚡ <strong>Energia:</strong> ${enC.toFixed(2)} kWh × R$ ${enTarifa.toFixed(4).replace('.',',')} = <strong>${brl(valEn)}</strong></div>
-    <div>💧 <strong>Água:</strong> ${agC.toFixed(3)} m³ × R$ ${agTarifa.toFixed(4).replace('.',',')} = <strong>${brl(valAg)}</strong></div>
+    <div><strong>Energia:</strong> ${enC.toFixed(2)} kWh × R$ ${enTarifa.toFixed(4).replace('.',',')} = <strong>${brl(valEn)}</strong></div>
+    <div><strong>Água:</strong> ${agC.toFixed(3)} m³ × R$ ${agTarifa.toFixed(4).replace('.',',')} = <strong>${brl(valAg)}</strong></div>
     <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--borda)">
-      💰 <strong>Total Repasse: ${brl(total)}</strong>
+      <strong>Total Repasse: ${brl(total)}</strong>
     </div>`;
 
   document.getElementById('modalOverlay').classList.add('open');
@@ -991,8 +1040,8 @@ async function carregarComparativo() {
       </tr>`;
     }
 
-    let html = row('⚡ Energia', teorEn, realEn, 'kWh', 2)
-             + row('💧 Água',    teorAg, realAg, 'm³',  3);
+    let html = row('Energia', teorEn, realEn, 'kWh', 2)
+             + row('Água',    teorAg, realAg, 'm³',  3);
 
     if (leitura) {
       const tarEn = parseFloat(leitura.energia_tarifa), tarAg = parseFloat(leitura.agua_tarifa);
@@ -1003,7 +1052,7 @@ async function carregarComparativo() {
       const cls  = Math.abs(diff)<0.01 ? 'diff-zero' : diff>0 ? 'diff-pos' : 'diff-neg';
       const sign = diff>=0 ? '+' : '';
       html += `<tr style="background:var(--zebra);font-weight:700">
-        <td>💰 Valor Total</td>
+        <td>Valor Total</td>
         <td>${brl(teorTotal)}</td>
         <td>${brl(realTotal)}</td>
         <td class="${cls}">${sign}${brl(Math.abs(diff)).replace('R$ ','')}</td>
